@@ -1,0 +1,6 @@
+{
+  "name": "EduGestion - NeuroDiversidad 2026",
+  "description": "Plataforma integral para la gestión de Necesidades Educativas Especiales",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
