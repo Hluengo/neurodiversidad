@@ -1,0 +1,718 @@
+{
+  "students": [
+    {
+      "fullName": "Javier Alonso Lillo Tardones",
+      "grade": "7°Básico A",
+      "diagnosis": "TDA (Vigencia: 18/03/2025)",
+      "resolution": "Graduar paso a paso. Simplificar las instrucciones. Monitorear durante las evaluaciones si presenta dudas. Realizar evaluaciones de matemática en sala de recursos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Noelia Leiton Gómez",
+      "grade": "7°Básico A",
+      "diagnosis": "TEA, Retraso neurolingüístico, Déficit Atencional (12/03/2025), TDAH, Autismo (30/04/2025), TEA Grado I (11/08/2025)",
+      "resolution": "Sentar estratégicamente. Lenguaje sencillo. Anticipar tareas. Más tiempo en evaluaciones. Revisar prueba antes de recibir. Respuestas acotadas en Lenguaje.",
+      "accommodationType": "Adecuación Curricular"
+    },
+    {
+      "fullName": "Mariana Cofré Mora",
+      "grade": "7°Básico A",
+      "diagnosis": "TEA grado 1, Trastorno Ansioso Depresivo (06/03/2025), TEA y Trastorno Ansioso depresivo (10/07/2025)",
+      "resolution": "Flexibilidad horaria. Permitir salir de sala en crisis. Evaluar con Educadora Diferencial. Uso de audífonos. Tiempo extra. Cierre académico 12/11/2025.",
+      "accommodationType": "Adecuación Curricular"
+    },
+    {
+      "fullName": "Cristóbal Lebedina Vera",
+      "grade": "7°Básico A",
+      "diagnosis": "Dificultades para mantener la atención (19/07/2024)",
+      "resolution": "Instrucciones claras y precisas. Asegurar comprensión. Dividir tareas en pasos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Joaquín Apablaza Rodríguez",
+      "grade": "7°Básico A",
+      "diagnosis": "Perturbación de la Actividad y de la Atención (06/03/2025), Constipación crónica (20/05/2025)",
+      "resolution": "Sentar en primeras filas. Eliminar actividades repetitivas. Tiempo extra. Reforzar asignaturas difíciles. Permiso para ir al baño.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Francisca Caniullan Bobadilla",
+      "grade": "7°Básico A",
+      "diagnosis": "Perturbación de la Actividad y de la Atención, C.I Normal Lento (14/03/2025)",
+      "resolution": "Sentar en primera fila con tutor. Instrucciones claras. Asegurar comprensión.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Julián lagos Troncoso",
+      "grade": "7°Básico A",
+      "diagnosis": "TEA leve, Déficit Atencional (24/03/2025)",
+      "resolution": "Sentar en primera fila. Lenguaje simple y concreto. Corroborar comprensión.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Benjamín Saldías Romero",
+      "grade": "7°Básico A",
+      "diagnosis": "TDA de Tipo Combinado (25/05/2025)",
+      "resolution": "Sentar cerca del pizarrón. Tiempo extra. Destacar palabras clave en negrita. Considerar dificultades motricidad fina en Arte/Tecnología/Ed. Física.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Camilo Sepúlveda Araya",
+      "grade": "7°Básico A",
+      "diagnosis": "TDAH, Trastorno adaptativo en remisión (06/10/2025)",
+      "resolution": "Segmentar instrucciones. Instrucciones simples. Apoyo de Educadora Diferencial en evaluaciones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Anais Ayelen Guzmán Rojas",
+      "grade": "7°Básico B",
+      "diagnosis": "Trastorno Déficit Atencional, Dislexia (05/03/25)",
+      "resolution": "Sentar en 1 Fila. Evitar lectura en público contra voluntad. Facilitar esquemas/conceptos clave. Tiempo adicional con educadora diferencial.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Marco Opazo Contreras",
+      "grade": "7°Básico B",
+      "diagnosis": "TEA y Trastorno de ansiedad (12/07/25)",
+      "resolution": "Tiempo extra para evaluaciones. Acompañamiento. Informar contenidos y fechas de evaluación al apoderado vía correo.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martina Hernández Muñoz",
+      "grade": "7°Básico B",
+      "diagnosis": "Trastorno de ansiedad generalizada (22/09/25)",
+      "resolution": "Facilidades para evaluaciones. Acompañamiento. Informar contenidos y fechas al apoderado.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Bernardita Abumohor Laguna",
+      "grade": "7°Básico B",
+      "diagnosis": "Trastorno adaptativo Mixto ansioso depresivo de intensidad moderada",
+      "resolution": "Dificultades sensoriales. Uso de audífonos y juguetes sensoriales. Permitir salida de sala si es necesario por desregulación social.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Fabián Espinoza Herrera",
+      "grade": "8° Básico A",
+      "diagnosis": "TEA leve (21/07/2023)",
+      "resolution": "Sentar en primera fila. Anticipar tareas. No exigir respuestas amplias. Flexibilidad mental. Apoyo en lenguaje. No trabajar solo en grupos. Diversificar modo de preguntar.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martín Sumonte Zurita",
+      "grade": "8° Básico A",
+      "diagnosis": "Trastornos neurosensoriales (28/01/2023)",
+      "resolution": "Flexibilidad mental. Anticipar tareas y comportamiento esperado.",
+      "accommodationType": "Sin adecuación"
+    },
+    {
+      "fullName": "Javiera Molina Farías",
+      "grade": "8° Básico A",
+      "diagnosis": "Trastorno de integración sensorial, Ansiedad en matemáticas (22/02/2024)",
+      "resolution": "Más tiempo en evaluaciones. Evaluación matemática fuera de la sala con educadora diferencial.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Emilia Moncada Riquelme",
+      "grade": "8° Básico A",
+      "diagnosis": "Trastorno Adaptativo con crisis de ansiedad (15/10/2024)",
+      "resolution": "Espacios seguros para expresión emocional. Tiempo para regular ansiedad. Evitar abrumar con preguntas.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Renata Sánchez Fernández",
+      "grade": "8° Básico A",
+      "diagnosis": "TDA, Trastorno ansioso",
+      "resolution": "Asegurar comprensión de instrucciones en evaluaciones. Entrevista con apoderado. Llamar a madre ante llanto/tiritones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Simón Guzmán",
+      "grade": "8° Básico A",
+      "diagnosis": "TDA",
+      "resolution": null,
+      "accommodationType": null
+    },
+    {
+      "fullName": "Cristina Aliste Aravena",
+      "grade": "8° Básico B",
+      "diagnosis": "TDA (2023)",
+      "resolution": null,
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Fernanda Sepúlveda Salinas",
+      "grade": "8° Básico B",
+      "diagnosis": "TDAH (13/03/24)",
+      "resolution": "Sentar adelante. Monitoreo permanente en matemáticas. Tiempo extra con educadora diferencial.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martina Vega Fritz",
+      "grade": "8° Básico B",
+      "diagnosis": "TDAH",
+      "resolution": "Asegurar comprensión de instrucciones. Monitorear durante observaciones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Julián Huaiquiñir Palma",
+      "grade": "8° Básico B",
+      "diagnosis": "Asmático",
+      "resolution": "Consideraciones en Ed. Física. Evitar ejercicios de alto rendimiento. Parar ante tos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Trinidad Morales Ramírez",
+      "grade": "8° Básico B",
+      "diagnosis": "TEA (07/05/24)",
+      "resolution": "Cautelar preguntas de opinión. Sentar en mismo lugar. Anticipar cambios de rutina. Tiempo extra ante ansiedad.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martín Contreras Contreras",
+      "grade": "8° Básico B",
+      "diagnosis": "TDA tipo impulsivo (08/07/24)",
+      "resolution": "Ubicar cercano al profesor.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Trinidad Navarrete Herrera",
+      "grade": "8° Básico B",
+      "diagnosis": "Intervención psicoterapeuta, inatención, dificultad de comprensión (05/08/24)",
+      "resolution": "Sentar en 2da o 3ra fila. Rol activo en sala.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Matías Martín Vega Pilgrín",
+      "grade": "8° Básico B",
+      "diagnosis": "Trastorno Fonoaudiológico",
+      "resolution": "Asiste a terapia. Recolectar guías semanalmente.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Francisca Oliveros Vargas",
+      "grade": "8° Básico B",
+      "diagnosis": "Trast. de la personalidad, Rasgos limítrofes, Cta. autolesiva",
+      "resolution": "Flexibilizar tiempos. Nota: No matrícula aún.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Sara Bello Palma",
+      "grade": "8° Básico B",
+      "diagnosis": "Depresión Infantil",
+      "resolution": "No aplicar evaluaciones ante desregulación emocional.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Nicolás Merino Fernández",
+      "grade": "1° Medio A",
+      "diagnosis": "TEA grado 1",
+      "resolution": "Tiempo extra o evaluaciones orales/trabajos. Sentar en primeras filas. Acompañamiento en evaluaciones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Agustina Gutiérrez",
+      "grade": "1° Medio A",
+      "diagnosis": "TDAH, Trastorno Vincular, Bulimia, Trastorno de ánimo",
+      "resolution": "Tiempo extra en evaluaciones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Agustina Fuentes Urrutia",
+      "grade": "1° Medio A",
+      "diagnosis": "TEA (20/03/25)",
+      "resolution": "Tiempo extra. No exponer en público. Preferir trabajos escritos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Daniela Correa Quinzio",
+      "grade": "1° Medio A",
+      "diagnosis": "TDA",
+      "resolution": "Flexibilizar tiempos en procesos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martina Marín Valenzuela",
+      "grade": "1° Medio A",
+      "diagnosis": "TDA",
+      "resolution": "Flexibilizar tiempos de procesos.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Antonia Fuentes Vega",
+      "grade": "1° Medio A",
+      "diagnosis": "TDAH e impulsividad",
+      "resolution": "Tratamiento farmacológico. Sentar adelante. Tiempo extra.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Sebastián Jaramillo",
+      "grade": "1° Medio A",
+      "diagnosis": "TDAH",
+      "resolution": "Permitir juguetes sensoriales (banda elástica).",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Alejandro Poblete Pineda",
+      "grade": "1° Medio A",
+      "diagnosis": "TEA (fines 2025), Ansiedad por separación",
+      "resolution": "Disminuir número de preguntas. Contención emocional. Flexibilidad académica.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Elena Carrasco Zenteno",
+      "grade": "1° Medio A",
+      "diagnosis": "TEA (24 de junio)",
+      "resolution": null,
+      "accommodationType": null
+    },
+    {
+      "fullName": "Vicente Mondaca",
+      "grade": "1° Medio B",
+      "diagnosis": "Síndrome de Addison (no produce cortisol)",
+      "resolution": "No sobre exigir (se fatiga). Medicación 12:00 hrs. Inasistencias justificadas.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Antonella Gutiérrez Gracia",
+      "grade": "1° Medio B",
+      "diagnosis": "TDA, Infecciones urinarias, Síndrome ansioso",
+      "resolution": "Sentar en primeros puestos. Permisos al baño.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Joaquín Salgado Larenas",
+      "grade": "1° Medio B",
+      "diagnosis": "TEA grado 1",
+      "resolution": "Evitar exposición pública. Permitir lugar cómodo ante ansiedad. Salida a enfermería ante desregulación. Tiempo extra.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Agustina Castillo Sanhueza",
+      "grade": "1° Medio B",
+      "diagnosis": "Infección Urinaria",
+      "resolution": "Permiso al baño cuando lo requiera.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Máximo Lira Mellado",
+      "grade": "1° Medio B",
+      "diagnosis": "TEA",
+      "resolution": "Molestia por ruidos/música. No verbaliza emociones. Rechazo al contacto físico.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Nicolás Larroza",
+      "grade": "1° Medio B",
+      "diagnosis": "Insuficiencia renal no especificada (07/07/2025)",
+      "resolution": "Permiso para el baño. Evaluaciones fuera del aula si requiere.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Manuel Huaracán Parra",
+      "grade": "1° Medio B",
+      "diagnosis": "Asma",
+      "resolution": "Considerar situación en Ed. Física.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Magdalena Fuentes Fuentes",
+      "grade": "1° Medio B",
+      "diagnosis": "TEA (Certificación pendiente)",
+      "resolution": "Molestia por ruidos. Salidas de sala. Dificultad matemática. Evaluar fuera de sala.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Benjamín González Toro",
+      "grade": "2° Medio A",
+      "diagnosis": "TEA alto funcionamiento",
+      "resolution": null,
+      "accommodationType": null
+    },
+    {
+      "fullName": "Ignacio Morales Venegas",
+      "grade": "2° Medio A",
+      "diagnosis": "TDA, Dif. Generales y específicas del Apren. (02/04/25)",
+      "resolution": "Tiempo extra. Omitir errores ortográficos. No penalizar por resultados en desarrollo matemática.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Octavio Lara Gutiérrez",
+      "grade": "2° Medio A",
+      "diagnosis": "TDA 2019",
+      "resolution": "Flexibilizar tiempos.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Maite Ramírez",
+      "grade": "2° Medio A",
+      "diagnosis": "Problemas renales",
+      "resolution": "Dejar salir al baño.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Matilda Silva",
+      "grade": "2° Medio A",
+      "diagnosis": "Estreñimiento crónico",
+      "resolution": "Dejar salir al baño.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Sofía Bravo Mardones",
+      "grade": "2° Medio A",
+      "diagnosis": "Sin diagnóstico",
+      "resolution": "Apoyo pedagógico. Monitorear tiempo en matemáticas.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Agustín Araneda Vergara",
+      "grade": "2° Medio A",
+      "diagnosis": "TDAH",
+      "resolution": "Focalizar atención en clases y evaluaciones. Monitorear.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Florencia Riquelme",
+      "grade": "2° Medio A",
+      "diagnosis": "Trastorno ansioso",
+      "resolution": "Facilitar material (ppt) para copiar.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Miguel Torres de Orúe",
+      "grade": "2° Medio A",
+      "diagnosis": null,
+      "resolution": "Permitir dibujo para regularse.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Agustín Vergara Pizarro",
+      "grade": "2° Medio A",
+      "diagnosis": "TEA",
+      "resolution": "Consolidar hábitos (sacar cuaderno, tomar apuntes).",
+      "accommodationType": null
+    },
+    {
+      "fullName": "María Paz Ancalao Solorza",
+      "grade": "2° Medio B",
+      "diagnosis": "Epilepsia generalizada, TEA (81/03/24)",
+      "resolution": "Sentar adelante. Lenguaje sencillo. Anticipar cambios. Tiempo extra. Reducir preguntas.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Vicente Aliste Aravena",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA (2022), Lectura poco fluida, Asmático crónico",
+      "resolution": "Flexibilizar tiempos. Aclarar dudas en evaluaciones.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Antonia Rivera Moreno",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA (2019)",
+      "resolution": "Monitorear en matemáticas.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Josefa Cabalín Viveros",
+      "grade": "2° Medio B",
+      "diagnosis": "En proceso de transición",
+      "resolution": "Llamar como Jose. Usa baño 1 piso.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Cristóbal Vega Fritz",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA",
+      "resolution": "Flexibilizar tiempo en matemática.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Antonia Arias Bustos",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA trastorno del cálculo",
+      "resolution": "Flexibilizar tiempo en matemáticas y ciencias.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Cristóbal Leiva",
+      "grade": "2° Medio B",
+      "diagnosis": "Sin diagnóstico",
+      "resolution": "Flexibilizar tiempos. Focalizar atención.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Javiera Galán Vargas",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA, Síndrome de ansiedad",
+      "resolution": "Sentar adelante. Tiempo extra.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martín Cifuentes Jeldres",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA (038/04/25)",
+      "resolution": "Sentar adelante. Extremadamente tímido.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Fernanda Gutiérrez Ortiz",
+      "grade": "2° Medio B",
+      "diagnosis": "Trastorno de la personalidad",
+      "resolution": "Evitar situaciones de estrés. Contención emocional.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Agustina Riffo Díaz",
+      "grade": "2° Medio B",
+      "diagnosis": "TDA",
+      "resolution": "Tiempo extra en evaluaciones de lenguaje, matemática, bio, quim.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Martín Fuentes Silva",
+      "grade": "3° Medio A",
+      "diagnosis": "TDAH, Trastorno aprendizaje lecto escritura y cálculo",
+      "resolution": null,
+      "accommodationType": "Adecuación curricular"
+    },
+    {
+      "fullName": "Felipe Grado",
+      "grade": "3° Medio A",
+      "diagnosis": "TDA (17/4/25)",
+      "resolution": "Tiempo extra. Sentar adelante.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Camila Gacitúa",
+      "grade": "3° Medio A",
+      "diagnosis": "Asma bronquial severa",
+      "resolution": "No exigir en Ed. Física.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Emilia Arias",
+      "grade": "3° Medio A",
+      "diagnosis": "TDA",
+      "resolution": "Tiempo extra en inglés, matemáticas e historia.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Fernanda Godoy Salamanca",
+      "grade": "3° Medio A",
+      "diagnosis": "TDA predominio inatento (18/02/2025)",
+      "resolution": "Sentar adelante. Flexibilidad en tiempo.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Juan Londoño Correa",
+      "grade": "3° Medio A",
+      "diagnosis": "TDAH, Trastorno adaptativo",
+      "resolution": "Sentar cerca del profesor. Monitorear.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Emilia Arias Saavedra",
+      "grade": "3° Medio A",
+      "diagnosis": null,
+      "resolution": "Rinde trabajos escritos en Ed. Física.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Amparo Toro Carrillo",
+      "grade": "3° Medio A",
+      "diagnosis": "TDA",
+      "resolution": "Sentar adelante. Tiempo extra en lenguaje, historia, bio y mate.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Francisca Vera Vargas",
+      "grade": "3° Medio A",
+      "diagnosis": "Nivel intelectual medio bajo, TDAH e impulsividad",
+      "resolution": "Tiempo extra. Introvertida.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Vicente Acevedo Ovalle",
+      "grade": "3° Medio B",
+      "diagnosis": "TDA y dificultad de aprendizaje (23/01/25)",
+      "resolution": "Sentar adelante. Flexibilizar tiempos. Apoyo y atención académica.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Maximiliano Flores Vicencio",
+      "grade": "3° Medio B",
+      "diagnosis": "TDA",
+      "resolution": "Tiempo extra en evaluaciones.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Florencia Villalobos Godoy",
+      "grade": "3° Medio B",
+      "diagnosis": "Trastorno depresivo severo, Trastorno por estrés postraumático",
+      "resolution": "Tratamiento farmacológico. Adecuar asignaturas de mate y física. Reforzar positivamente.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Ignacio Cifuentes Espinoza",
+      "grade": "3° Medio B",
+      "diagnosis": "TDA",
+      "resolution": "Frente a conflictos se descompensa.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Catalina Reyes Fuentes",
+      "grade": "3° Medio B",
+      "diagnosis": "Problemas de visión, Nistagmus y astigmatismo, Fotofobia",
+      "resolution": "Sentarse en primera fila. Letra 14 en pruebas.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Natalia Ullauri Werlinger",
+      "grade": "3° Medio B",
+      "diagnosis": "TEA (10/2/25), TDA, Trastorno aprendizaje mixto, Miopía",
+      "resolution": "Sentarse adelante. Diversificar evaluación. Tiempo extra. Letra 14. Evitar ridiculización.",
+      "accommodationType": "Adecuación de Acceso"
+    },
+    {
+      "fullName": "Sofía Gracia Silva",
+      "grade": "3° Medio B",
+      "diagnosis": "Infección urinaria a repetición, Tinitus, Antecedente paralipsis facial periférica",
+      "resolution": "Uso de buzo escolar. Salidas al baño. Evitar ruidos agudos.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "María Ignacia Valenzuela",
+      "grade": "3° Medio B",
+      "diagnosis": "Síndrome de Turner, afecta concentración",
+      "resolution": "Flexibilizar tiempo en evaluaciones.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Maite Riquelme Lalut",
+      "grade": "3° Medio B",
+      "diagnosis": "TDA no tratado, CI Limítrofe",
+      "resolution": "Dificultad concentración. Sentar adelante. Tiempo extra. Monitorear.",
+      "accommodationType": "Adecuación curricular"
+    },
+    {
+      "fullName": "Martín Órdenes Pincheira",
+      "grade": "3° Medio B",
+      "diagnosis": "TEA, TDAH, Trastorno Integración sensorial, PAS",
+      "resolution": "Tiempo extra. Rendir evaluaciones afuera si requiere.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Carolina Olivares Garrido",
+      "grade": "3° Medio B",
+      "diagnosis": "TEA (27/01/24)",
+      "resolution": null,
+      "accommodationType": null
+    },
+    {
+      "fullName": "Samuel Ramírez Vecchi",
+      "grade": "3° Medio B",
+      "diagnosis": "Neurodivergencia leve especial en área sensorial y social (13/10/2025)",
+      "resolution": "Conversar con alumno marzo 2026.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Martín Ruiz Salazar",
+      "grade": "4° Medio A",
+      "diagnosis": "TEA Y TDA, Dificultad general de aprendizaje",
+      "resolution": "Plan Integral de Acompañamiento. Sentar adelante. Desplazamientos libres. Tiempo extra. Disminución carga tareas.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Martín Morales Concha",
+      "grade": "4° Medio A",
+      "diagnosis": "TDA y síntomas ansiosos (03/04/25)",
+      "resolution": "Sentarlo en puestos delanteros. Monitorear. Tiempo extra. Pruebas cortas.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Alonso Medel Muñoz",
+      "grade": "4° Medio A",
+      "diagnosis": "TDA",
+      "resolution": "Tiempo extra en evaluaciones.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Florencia Bobadilla Salas",
+      "grade": "4° Medio A",
+      "diagnosis": "TOC intensidad severa, afectación procesos atencionales",
+      "resolution": "Observar.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Benjamín Bazán",
+      "grade": "4° Medio A",
+      "diagnosis": "Trastorno de depresión moderada",
+      "resolution": "Dificultad para concentrarse. Tiempo extra. Estar atentos a desempeño.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Camila Llanos Figueroa",
+      "grade": "4° Medio A",
+      "diagnosis": "TEA grado 1 y Trastorno Adaptativo (28/11/24) con síntomas depresivos",
+      "resolution": null,
+      "accommodationType": null
+    },
+    {
+      "fullName": "Renato Gutiérrez Lara",
+      "grade": "4° Medio B",
+      "diagnosis": "TEA",
+      "resolution": "Sentar en puestos delanteros. Tiempo extra. Trabajar parte social.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Vicente Suárez",
+      "grade": "4° Medio B",
+      "diagnosis": "TDA",
+      "resolution": "Observar si necesita más tiempo.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Renata Buhring Carrasco",
+      "grade": "4° Medio B",
+      "diagnosis": null,
+      "resolution": "Sintomatología ansiosa y depresiva. Crisis nerviosa.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Emilie Lagos Manriquez",
+      "grade": "4° Medio B",
+      "diagnosis": "Cuadro ansioso generalizado",
+      "resolution": "Atentos a cambios conductuales y de rendimiento.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Daniel Dellán Velásquez",
+      "grade": "4° Medio B",
+      "diagnosis": "TEA",
+      "resolution": "Apoyar habilidades socio afectivas. Tiempo extra. Preguntar oralmente si es necesario.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Martín Pérez Saravia",
+      "grade": "4° Medio B",
+      "diagnosis": "En etapa de monitoreo con psicólogo",
+      "resolution": "Permitir salida de sala si requiere.",
+      "accommodationType": null
+    },
+    {
+      "fullName": "Florencia Holzapfel",
+      "grade": "4° Medio B",
+      "diagnosis": "TEA, Trastorno ansioso generalizado con crisis de pánico, TDA",
+      "resolution": "Evitar exposiciones públicas. Camisa afuera por textura. Evitar actividades grupales en Ed. Física.",
+      "accommodationType": "Adecuación de acceso"
+    },
+    {
+      "fullName": "Antonia escobar Zóñez",
+      "grade": "4° Medio B",
+      "diagnosis": "Disautonomía",
+      "resolution": null,
+      "accommodationType": null
+    }
+  ]
+}
