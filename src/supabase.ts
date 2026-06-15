@@ -5,17 +5,15 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase credentials missing. Please check your .env file.', {
-    VITE_SUPABASE_URL: supabaseUrl,
-    VITE_SUPABASE_ANON_KEY_present: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-    VITE_SUPABASE_PUBLISHABLE_KEY_present: !!import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-  });
+  // In development show a simple warning; never print secrets or full env in logs.
+  if (import.meta.env.DEV) {
+    console.warn('Supabase credentials missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env');
+  }
 } else {
-  // Informational log (temporary) to confirm which variables are being used in the client
-  console.info('Supabase env (client):', {
-    VITE_SUPABASE_URL: supabaseUrl,
-    usedAnonKeySource: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'VITE_SUPABASE_ANON_KEY' : (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ? 'VITE_SUPABASE_PUBLISHABLE_KEY' : 'none'),
-  });
+  // Avoid printing environment details in production. Keep minimal dev-only confirmation.
+  if (import.meta.env.DEV) {
+    console.info('Supabase client configured (dev mode).');
+  }
 }
 
 export const supabase = createClient(

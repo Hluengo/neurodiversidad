@@ -18,6 +18,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "recharts": "^3.8.0",
+    "react-window": "^1.8.7",
     "tailwind-merge": "^2.2.1",
     "vitest": "^4.0.18"
   },

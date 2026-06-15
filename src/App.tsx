@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useStudents } from './hooks/useStudents';
+import { useDebouncedValue } from './hooks/useDebouncedValue';
 import { 
   Users, 
   ShieldAlert, 
@@ -36,10 +38,13 @@ import {
   Cell
 } from 'recharts';
 import { motion, AnimatePresence } from 'motion/react';
+import StudentList from './features/students/StudentList';
+import StudentsPage from './features/students/StudentsPage';
 import { supabase } from './supabase';
 import { seedStudents } from './data/seedData';
 import { User } from '@supabase/supabase-js';
 import { clsx, type ClassValue } from 'clsx';
+import { Student } from './types';
 import { twMerge } from 'tailwind-merge';
 import { PrivacyMask } from './components/PrivacyMask';
 import { Profiler } from 'react';
@@ -85,16 +90,7 @@ async function handleSupabaseError(error: any, operationType: OperationType, pat
   throw new Error(JSON.stringify(errInfo));
 }
 
-interface Student {
-  id: string;
-  fullName: string;
-  grade: string;
-  diagnosis: string;
-  resolution: string;
-  accommodationType: 'Adecuación de Acceso' | 'Adecuación Curricular' | 'Sin adecuación';
-  photoUrl?: string | null;
-  createdAt: string;
-}
+
 
 // --- Components ---
 
@@ -176,233 +172,29 @@ const ALL_GRADES = {
   ]
 };
 
-const StudentListItem = React.memo(({ 
-  student, 
-  isAdmin, 
-  privacyVisible, 
-  onView, 
-  onEdit, 
-  onDelete 
-}: { 
-  student: Student, 
-  isAdmin: boolean, 
-  privacyVisible: boolean, 
-  onView: (s: Student) => void, 
-  onEdit: (s: Student) => void, 
-  onDelete: (s: Student) => void 
-}) => (
-  <div className="data-grid-row group">
-    {/* Mobile Layout */}
-    <div className="lg:hidden space-y-4 col-span-12">
-      <div className="flex justify-between items-start">
-        <div className="flex items-center gap-4">
-          <div className="relative group/photo">
-            <div className="w-20 h-20 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0 shadow-sm transition-all duration-300 hover:scale-[3] hover:z-50 hover:shadow-2xl cursor-zoom-in">
-              {student.photoUrl === undefined ? (
-                <div className="w-full h-full bg-slate-200 animate-pulse flex items-center justify-center">
-                  <UserIcon className="w-10 h-10 text-slate-300" />
-                </div>
-              ) : student.photoUrl ? (
-                <img 
-                  key={student.photoUrl}
-                  src={student.photoUrl} 
-                  alt="" 
-                  className="w-full h-full object-cover img-fade-in" 
-                  loading="lazy" 
-                />
-              ) : (
-                <UserIcon className="w-10 h-10 text-slate-300" />
-              )}
-            </div>
-            <div className={cn(
-              "absolute -bottom-1 -right-1 w-7 h-7 rounded-xl border-2 border-white flex items-center justify-center shadow-lg",
-              student.accommodationType === 'Adecuación de Acceso' ? "bg-emerald-500" :
-              student.accommodationType === 'Adecuación Curricular' ? "bg-amber-500" :
-              "bg-slate-400"
-            )}>
-              {student.accommodationType === 'Adecuación de Acceso' ? <ShieldAlert className="w-3.5 h-3.5 text-white" /> :
-                student.accommodationType === 'Adecuación Curricular' ? <FileText className="w-3.5 h-3.5 text-white" /> :
-                <UserIcon className="w-3.5 h-3.5 text-white" />}
-            </div>
-          </div>
-          <div>
-            <h4 className="font-bold text-slate-800 text-lg">
-              <PrivacyMask text={student.fullName} visible={!privacyVisible} />
-            </h4>
-            <div className="flex flex-col gap-1 mt-1">
-              <span className="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 rounded-lg text-[10px] font-black w-fit">
-                {student.grade}
-              </span>
-              <span className={cn(
-                "text-[9px] font-black uppercase tracking-wider",
-                student.accommodationType === 'Adecuación de Acceso' ? "text-emerald-600" :
-                student.accommodationType === 'Adecuación Curricular' ? "text-amber-600" :
-                "text-slate-400"
-              )}>
-                {student.accommodationType}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => onView(student)}
-            className="p-2 bg-white border border-slate-200 text-slate-400 hover:text-brand-accent rounded-xl shadow-sm group relative"
-          >
-            <Eye className="w-4 h-4" />
-          </button>
-          {isAdmin && (
-            <div className="flex gap-2">
-              <button 
-                onClick={() => onEdit(student)}
-                className="p-2 bg-white border border-slate-200 text-slate-400 hover:text-brand-accent rounded-xl shadow-sm group relative"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => onDelete(student)}
-                className="p-2 bg-white border border-slate-200 text-red-400 hover:text-red-600 rounded-xl shadow-sm group relative"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Diagnóstico</p>
-          <p className="text-sm text-slate-600 leading-relaxed line-clamp-2">{student.diagnosis}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Estrategias</p>
-          <p className="text-sm text-slate-500 italic leading-relaxed line-clamp-2">{student.resolution}</p>
-        </div>
-      </div>
-    </div>
-
-    {/* Desktop Layout */}
-    <div className="hidden lg:flex lg:col-span-3 items-center gap-5 font-bold text-slate-800">
-      <div className="relative group/photo">
-        <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-md transition-all duration-300 hover:scale-[3] hover:z-50 hover:shadow-2xl cursor-zoom-in origin-left">
-          {student.photoUrl === undefined ? (
-            <div className="w-full h-full bg-slate-200 animate-pulse flex items-center justify-center">
-              <UserIcon className="w-7 h-7 text-slate-300" />
-            </div>
-          ) : student.photoUrl ? (
-            <img 
-              key={student.photoUrl}
-              src={student.photoUrl} 
-              alt="" 
-              className="w-full h-full object-cover img-fade-in" 
-              loading="lazy" 
-            />
-          ) : (
-            <UserIcon className="w-7 h-7 text-slate-300" />
-          )}
-        </div>
-        <div className={cn(
-          "absolute -bottom-1 -right-1 w-6 h-6 rounded-lg border-2 border-white flex items-center justify-center shadow-lg",
-          student.accommodationType === 'Adecuación de Acceso' ? "bg-emerald-500" :
-          student.accommodationType === 'Adecuación Curricular' ? "bg-amber-500" :
-          "bg-slate-400"
-        )}>
-          {student.accommodationType === 'Adecuación de Acceso' ? <ShieldAlert className="w-3 h-3 text-white" /> :
-            student.accommodationType === 'Adecuación Curricular' ? <FileText className="w-3 h-3 text-white" /> :
-            <UserIcon className="w-3 h-3 text-white" />}
-        </div>
-      </div>
-      <div className="flex flex-col gap-0.5">
-        <span className="text-sm tracking-tight">
-          <PrivacyMask text={student.fullName} visible={!privacyVisible} />
-        </span>
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{student.grade}</span>
-      </div>
-    </div>
-
-    <div className="hidden lg:flex lg:col-span-2 items-center">
-      <span className={cn(
-        "status-pill",
-        student.accommodationType === 'Adecuación de Acceso' ? "bg-emerald-50/50 text-emerald-600 border-emerald-100" :
-        student.accommodationType === 'Adecuación Curricular' ? "bg-amber-50/50 text-amber-600 border-amber-100" :
-        "bg-slate-50 text-slate-400 border-slate-100"
-      )}>
-        {student.accommodationType}
-      </span>
-    </div>
-
-    <div className="hidden lg:flex lg:col-span-2 items-center pr-4">
-      <p className="text-xs text-slate-600 font-medium line-clamp-2 leading-relaxed">{student.diagnosis}</p>
-    </div>
-
-    <div className="hidden lg:flex lg:col-span-4 items-center pr-4">
-      <p className="text-xs text-slate-500 italic line-clamp-2 leading-relaxed">{student.resolution}</p>
-    </div>
-
-    <div className="hidden lg:flex lg:col-span-1 items-center justify-end gap-1">
-      <button 
-        onClick={() => onView(student)}
-        className="p-2 text-slate-400 hover:text-brand-accent hover:bg-brand-accent/5 rounded-xl transition-all"
-        title="Ver Ficha"
-      >
-        <Eye className="w-4 h-4" />
-      </button>
-      {isAdmin && (
-        <>
-          <button 
-            onClick={() => onEdit(student)}
-            className="p-2 text-slate-400 hover:text-brand-accent hover:bg-brand-accent/5 rounded-xl transition-all"
-            title="Editar"
-          >
-            <Edit2 className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={() => onDelete(student)}
-            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-            title="Eliminar"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </>
-      )}
-    </div>
-  </div>
-));
-
-// --- Local Storage Fallback Utils ---
-const LOCAL_STORAGE_KEY = 'edugestion_local_students';
-
-function getLocalStudents(): Student[] {
-  const local = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (local) {
+// ===== RETRY UTILITY =====
+const retryAsync = async <T,>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  delayMs: number = 500
+): Promise<T> => {
+  let lastError: any;
+  for (let i = 0; i < maxRetries; i++) {
     try {
-      return JSON.parse(local);
-    } catch (e) {
-      console.error("Error breaking local storage JSON", e);
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, delayMs * Math.pow(2, i)));
+      }
     }
   }
-  
-  // Create default from seedStudents
-  const defaults: Student[] = seedStudents.map((s, idx) => ({
-    id: `local-student-${idx}`,
-    fullName: s.fullName,
-    grade: s.grade,
-    diagnosis: s.diagnosis,
-    resolution: s.resolution,
-    accommodationType: (s.accommodationType === 'Adecuación de Acceso' || s.accommodationType === 'Adecuación Curricular') 
-      ? s.accommodationType 
-      : 'Sin adecuación',
-    photoUrl: undefined,
-    createdAt: new Date(Date.now() - idx * 12 * 60 * 60 * 1000).toISOString()
-  }));
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(defaults));
-  return defaults;
-}
+  throw lastError;
+};
 
-function saveLocalStudents(list: Student[]) {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
-}
+
+
+// Local storage key is handled inside studentsService; prefer using the students hook/service.
 
 // --- Main App ---
 
@@ -427,8 +219,19 @@ export default function App() {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   const [students, setStudents] = useState<Student[]>([]);
+  // Integrate useStudents hook (local-first data layer)
+  const studentsHook = useStudents();
+
+  // Keep local `students` state in sync with the hook's storage-backed list.
+  useEffect(() => {
+    if (studentsHook.students && Array.isArray(studentsHook.students) && studentsHook.students.length > 0) {
+      setStudents(studentsHook.students as Student[]);
+    }
+  }, [studentsHook.students]);
   const photoCache = React.useRef<Record<string, string | null>>({});
   const uniqueGrades = useMemo(() => {
+    if (!students || students.length === 0) return [];
+    
     let filteredGrades = students.map(s => s.grade);
     
     if (levelFilter === 'preschool') {
@@ -443,14 +246,7 @@ export default function App() {
     return Array.from(grades).sort();
   }, [students, levelFilter]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  const debouncedSearch = useDebouncedValue(searchTerm, 300);
   const [isAddingStudent, setIsAddingStudent] = useState(false);
   const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
@@ -479,7 +275,7 @@ export default function App() {
 
     const hasMissingConfig = !import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
     if (hasMissingConfig || isLocalFallback) {
-      const local = getLocalStudents();
+      const local = studentsHook.students && studentsHook.students.length > 0 ? studentsHook.students : [];
       setStudents(local.sort((a, b) => 
         (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })
       ));
@@ -489,78 +285,40 @@ export default function App() {
     }
 
     try {
-      // 1. Fetch basic info for all students (up to 1000) - NO photoUrl to avoid timeout
+      // Optimized query: exclude photoUrl initially to avoid timeout
       const { data, error } = await supabase
         .from('students')
-        .select('id, fullName, grade, diagnosis, resolution, accommodationType, createdAt')
-        .limit(1000);
+        .select('id,fullName,grade,diagnosis,resolution,accommodationType,createdAt', { count: 'exact' })
+        .limit(1000)
+        .order('fullName', { ascending: true });
       
       if (error) {
-        console.warn("Supabase fetch error, fallback to local storage:", error);
-        const local = getLocalStudents();
-        setStudents(local.sort((a, b) => 
-          (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })
-        ));
-        setIsLocalFallback(true);
-        if (!isBackground) setIsDataLoading(false);
-        showToast("Conexión con el servidor no disponible. Ejecutando en Modo Local Inteligente.", "info");
-      } else {
-        console.log(`Fetched ${data?.length || 0} students (basic info)`);
-        
-        // Sort in memory
-        const sortedData = (data as Student[]).map(s => ({
-          ...s,
-          photoUrl: photoCache.current[s.id] !== undefined ? photoCache.current[s.id] : undefined
-        })).sort((a, b) => 
-          (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })
-        );
-        
-        setStudents(sortedData);
-        if (!isBackground) setIsDataLoading(false);
-        setGlobalError(null);
-
-        // 2. Fetch photos for the first 50 students in a separate, smaller query
-        if (sortedData.length > 0) {
-          const firstBatchIds = sortedData
-            .filter(s => s.photoUrl === undefined)
-            .slice(0, 50)
-            .map(s => s.id);
-          
-          if (firstBatchIds.length > 0) {
-            const { data: photos, error: photoError } = await supabase
-              .from('students')
-              .select('id, photoUrl')
-              .in('id', firstBatchIds);
-            
-            if (!photoError && photos) {
-              // Update cache
-              photos.forEach(p => {
-                photoCache.current[p.id] = p.photoUrl;
-              });
-
-              setStudents(prev => prev.map(s => {
-                const photoMatch = photos.find(p => p.id === s.id);
-                return photoMatch ? { ...s, photoUrl: photoMatch.photoUrl } : s;
-              }));
-            }
-          }
-        }
+        throw error;
       }
-    } catch (err) {
-      console.error("Error in fetchStudents, falling back to local:", err);
-      const local = getLocalStudents();
+
+      const sortedData = (data as Student[]).map(s => ({
+        ...s,
+        photoUrl: undefined
+      }));
+      
+      setStudents(sortedData);
+      if (!isBackground) setIsDataLoading(false);
+      setGlobalError(null);
+    } catch (err: any) {
+      console.warn("Supabase fetch error, fallback to local storage:", err?.message);
+      const local = studentsHook.students && studentsHook.students.length > 0 ? studentsHook.students : [];
       setStudents(local.sort((a, b) => 
         (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })
       ));
       setIsLocalFallback(true);
       if (!isBackground) setIsDataLoading(false);
-      showToast("Ejecutando en Modo Local (Fuera de línea).", "info");
+      showToast("Funcionando en modo local. Los cambios se sincronizarán cuando haya conexión.", "info");
     }
-  }, [isLocalFallback]);
+  }, [isLocalFallback, studentsHook.students]);
 
   const fetchFullStudent = async (studentId: string) => {
     if (isLocalFallback) {
-      const local = getLocalStudents().find(s => s.id === studentId);
+      const local = studentsHook.students.find(s => s.id === studentId) || null;
       return local || null;
     }
 
@@ -575,7 +333,7 @@ export default function App() {
       return data as Student;
     } catch (err) {
       console.error("Error fetching full student, fallback to local:", err);
-      const local = getLocalStudents().find(s => s.id === studentId);
+      const local = studentsHook.students.find(s => s.id === studentId) || null;
       return local || null;
     }
   };
@@ -629,7 +387,13 @@ export default function App() {
     showToast("Iniciando eliminación masiva...", "info");
     
     if (isLocalFallback) {
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      try {
+        // Clear local seeded data via service
+        const { default: studentsSvc } = await import('./services/studentsService');
+        await studentsSvc.clearLocal();
+      } catch (err) {
+        console.error('Error clearing local students:', err);
+      }
       setStudents([]);
       showToast("Todos los registros locales han sido eliminados.", "success");
       return;
@@ -666,7 +430,7 @@ export default function App() {
 
   const handleDeleteStudent = async () => {
     if (!studentToDelete || !isAdmin) {
-      showToast("Acceso denegado: No tienes permisos para eliminar.", "error");
+      showToast("Acceso denegado.", "error");
       return;
     }
     
@@ -677,33 +441,31 @@ export default function App() {
     setStudentToDelete(null);
     
     try {
-      // Optimistic update: Remove from list and close detail view immediately
+      // Optimistic update
       setStudents(prev => prev.filter(s => s.id !== id));
       if (viewingStudent?.id === id) setViewingStudent(null);
       
       if (isLocalFallback) {
-        const local = getLocalStudents().filter(s => s.id !== id);
-        saveLocalStudents(local);
-        showToast(`Estudiante ${name} eliminado correctamente (local).`, "success");
+        await studentsHook.remove(id);
+        showToast(`✓ ${name} eliminado.`, "success");
         return;
       }
-      
-      const { error } = await supabase
-        .from('students')
-        .delete()
-        .eq('id', id);
 
-      if (error) {
-        console.error("Supabase delete error:", error);
-        showToast("Error al eliminar en el servidor. Revirtiendo...", "error");
-        fetchStudents(); // Revert on error
-      } else {
-        showToast(`Estudiante ${name} eliminado correctamente.`, "success");
-      }
-    } catch (error) {
-      console.error("Error deleting student:", error);
-      showToast("Error al eliminar el estudiante.", "error");
-      fetchStudents(); // Revert on error
+      await retryAsync(async () => {
+        const { error } = await supabase
+          .from('students')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+      }, 2, 800);
+
+      showToast(`✓ ${name} eliminado.`, "success");
+    } catch (error: any) {
+      console.error("Error deleting student:", error?.message);
+      // Revert on error
+      fetchStudents();
+      showToast("No se pudo eliminar. Intenta de nuevo.", "error");
     }
   };
 
@@ -757,7 +519,7 @@ export default function App() {
     e.preventDefault();
     
     if (!isAdmin) {
-      showToast("Acceso denegado: No tienes permisos para realizar esta acción.", "error");
+      showToast("Acceso denegado. Solo administradores pueden crear/editar.", "error");
       return;
     }
     
@@ -771,24 +533,16 @@ export default function App() {
 
     try {
       if (isLocalFallback) {
-        let updatedList: Student[] = [];
         if (isEditing && studentId) {
-          updatedList = getLocalStudents().map(s => s.id === studentId ? { ...s, ...studentData } : s);
-          showToast("Estudiante actualizado correctamente (local).", "success");
-          
-          if (studentData.photoUrl) {
-            photoCache.current[studentId] = studentData.photoUrl;
+          await studentsHook.update(studentId, studentData as any);
+          setStudents(prev => prev.map(s => s.id === studentId ? { ...s, ...studentData } as Student : s));
+          if (viewingStudent?.id === studentId) {
+            setViewingStudent({ ...viewingStudent, ...studentData });
           }
-          if (viewingStudent && viewingStudent.id === studentId) {
-            setViewingStudent({
-              ...viewingStudent,
-              ...studentData
-            });
-          }
+          showToast("✓ Estudiante actualizado.", "success");
         } else {
-          const generatedId = `local-student-${Date.now()}`;
           const newLocalStudent: Student = {
-            id: generatedId,
+            id: `local-student-${Date.now()}`,
             fullName: studentData.fullName,
             grade: studentData.grade,
             diagnosis: studentData.diagnosis,
@@ -797,80 +551,62 @@ export default function App() {
             photoUrl: studentData.photoUrl || undefined,
             createdAt: new Date().toISOString()
           };
-          updatedList = [newLocalStudent, ...getLocalStudents()];
-          showToast("Estudiante registrado correctamente (local).", "success");
+          await studentsHook.create(newLocalStudent as any);
+          setStudents(prev => [newLocalStudent, ...prev]);
+          showToast("✓ Estudiante registrado.", "success");
         }
-        
-        saveLocalStudents(updatedList);
-        setStudents(updatedList.sort((a, b) => 
-          (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })
-        ));
         return;
       }
 
+      // Supabase operations with retry logic
       if (isEditing && studentId) {
-        const { error } = await supabase
-          .from('students')
-          .update({
-            fullName: studentData.fullName,
-            grade: studentData.grade,
-            diagnosis: studentData.diagnosis,
-            resolution: studentData.resolution,
-            accommodationType: studentData.accommodationType,
-            photoUrl: studentData.photoUrl
-          })
-          .eq('id', studentId);
+        await retryAsync(async () => {
+          const { error } = await supabase
+            .from('students')
+            .update({
+              fullName: studentData.fullName,
+              grade: studentData.grade,
+              diagnosis: studentData.diagnosis,
+              resolution: studentData.resolution,
+              accommodationType: studentData.accommodationType,
+              photoUrl: studentData.photoUrl || null
+            })
+            .eq('id', studentId);
 
-        if (error) {
-          await handleSupabaseError(error, OperationType.UPDATE, `students/${studentId}`);
+          if (error) throw error;
+        }, 3, 1000);
+
+        setStudents(prev => prev.map(s => s.id === studentId ? { ...s, ...studentData } as Student : s));
+        if (viewingStudent?.id === studentId) {
+          setViewingStudent({ ...viewingStudent, ...studentData });
         }
-        showToast("Estudiante actualizado correctamente.", "success");
-        
-        // Optimistic update for the list
-        setStudents(prev => prev.map(s => s.id === studentId ? { ...s, ...studentData } : s));
-        
-        // Update cache
-        if (studentData.photoUrl) {
-          photoCache.current[studentId] = studentData.photoUrl;
-        }
-        
-        // Update viewingStudent if it's the one being edited
-        if (viewingStudent && viewingStudent.id === studentId) {
-          setViewingStudent({
-            ...viewingStudent,
-            ...studentData
-          });
-        }
+        showToast("✓ Estudiante actualizado.", "success");
       } else {
-        const { data, error } = await supabase
-          .from('students')
-          .insert([{
-            fullName: studentData.fullName,
-            grade: studentData.grade,
-            diagnosis: studentData.diagnosis,
-            resolution: studentData.resolution,
-            accommodationType: studentData.accommodationType,
-            photoUrl: studentData.photoUrl
-          }])
-          .select();
+        const { data, error } = await retryAsync(async () => {
+          return await supabase
+            .from('students')
+            .insert([{
+              fullName: studentData.fullName,
+              grade: studentData.grade,
+              diagnosis: studentData.diagnosis,
+              resolution: studentData.resolution,
+              accommodationType: studentData.accommodationType,
+              photoUrl: studentData.photoUrl || null
+            }])
+            .select();
+        }, 3, 1000);
 
-        if (error) {
-          await handleSupabaseError(error, OperationType.CREATE, 'students');
-        } else if (data && data[0]) {
+        if (data && data[0]) {
           const createdStudent = data[0] as Student;
-          // Update cache
-          if (createdStudent.photoUrl) {
-            photoCache.current[createdStudent.id] = createdStudent.photoUrl;
-          }
-          // Optimistic update for the list
           setStudents(prev => [createdStudent, ...prev]);
+          showToast("✓ Estudiante registrado.", "success");
         }
-        
-        showToast("Estudiante registrado correctamente.", "success");
       }
-    } catch (error) {
-      console.error("Error saving student", error);
-      showToast("Error al guardar los datos.", "error");
+    } catch (error: any) {
+      console.error("Error saving student:", error?.message);
+      showToast(error?.message?.includes('network') 
+        ? "Error de conexión. Intenta de nuevo." 
+        : "No se pudo guardar. Revisa los datos.", "error");
     }
   };
 
@@ -1923,139 +1659,30 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               className="space-y-6"
             >
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <input 
-                    type="text" 
-                    placeholder="Buscar..." 
-                    className="w-full pl-12 pr-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm md:text-base"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div className="relative">
-                  <select 
-                    className="w-full sm:w-48 px-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm md:text-base appearance-none cursor-pointer"
-                    value={gradeFilter || ''}
-                    onChange={(e) => setGradeFilter(e.target.value || null)}
-                  >
-                    <option value="">Todos los cursos</option>
-                    {uniqueGrades.map(grade => (
-                      <option key={grade} value={grade}>{grade}</option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                    <Filter className="w-4 h-4" />
-                  </div>
-                </div>
-                {diagnosisFilter && (
-                  <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
-                    <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Filtro: {diagnosisFilter}</span>
-                    <button 
-                      onClick={() => setDiagnosisFilter(null)}
-                      className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
-                    >
-                      <X className="w-4 h-4 text-brand-accent" />
-                    </button>
-                  </div>
-                )}
-                {accommodationFilter && (
-                  <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
-                    <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Filtro: {accommodationFilter}</span>
-                    <button 
-                      onClick={() => setAccommodationFilter(null)}
-                      className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
-                    >
-                      <X className="w-4 h-4 text-brand-accent" />
-                    </button>
-                  </div>
-                )}
-                {gradeFilter && (
-                  <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
-                    <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Curso: {gradeFilter}</span>
-                    <button 
-                      onClick={() => setGradeFilter(null)}
-                      className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
-                    >
-                      <X className="w-4 h-4 text-brand-accent" />
-                    </button>
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={cn(
-                      "flex-1 sm:flex-none px-4 md:px-6 py-3 md:py-4 rounded-2xl font-medium flex items-center justify-center gap-2 transition-all text-sm",
-                      showFilters ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/20" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-                    )}
-                  >
-                    <Filter className="w-4 h-4 md:w-5 md:h-5" />
-                    Filtros
-                  </button>
-                  {isAdmin && (
-                    <button 
-                      onClick={() => setIsAddingStudent(true)}
-                      className="flex-1 sm:flex-none bg-brand-accent text-white px-4 md:px-8 py-3 md:py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-brand-accent/20 text-sm"
-                    >
-                      <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                      Nuevo
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {showFilters && (
-                  <motion.div 
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="glass-card p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-brand-accent/20">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Diagnóstico</label>
-                        <div className="flex flex-wrap gap-2">
-                          {['TEA', 'TDAH', 'TDA', 'Salud Mental', 'Otros'].map(cat => (
-                            <button
-                              key={cat}
-                              onClick={() => setDiagnosisFilter(diagnosisFilter === cat ? null : cat)}
-                              className={cn(
-                                "px-3 py-1.5 rounded-xl text-xs font-bold transition-all border",
-                                diagnosisFilter === cat 
-                                  ? "bg-brand-accent text-white border-brand-accent shadow-md" 
-                                  : "bg-white text-slate-500 border-slate-200 hover:border-brand-accent hover:text-brand-accent"
-                              )}
-                            >
-                              {cat}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Adecuación</label>
-                        <div className="flex flex-wrap gap-2">
-                          {['Adecuación de Acceso', 'Adecuación Curricular', 'Sin adecuación'].map(type => (
-                            <button
-                              key={type}
-                              onClick={() => setAccommodationFilter(accommodationFilter === type ? null : type)}
-                              className={cn(
-                                "px-3 py-1.5 rounded-xl text-xs font-bold transition-all border",
-                                accommodationFilter === type 
-                                  ? "bg-brand-accent text-white border-brand-accent shadow-md" 
-                                  : "bg-white text-slate-500 border-slate-200 hover:border-brand-accent hover:text-brand-accent"
-                              )}
-                            >
-                              {type}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <StudentsPage
+                filteredStudents={filteredStudents}
+                isDataLoading={isDataLoading}
+                isAdmin={isAdmin}
+                privacyVisible={privacyVisible}
+                fetchFullStudent={fetchFullStudent}
+                startEditing={startEditing}
+                setStudentToDelete={setStudentToDelete}
+                setIsConfirmingDelete={setIsConfirmingDelete}
+                setViewingStudent={setViewingStudent}
+                setStudents={setStudents}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                gradeFilter={gradeFilter}
+                setGradeFilter={setGradeFilter}
+                diagnosisFilter={diagnosisFilter}
+                setDiagnosisFilter={setDiagnosisFilter}
+                accommodationFilter={accommodationFilter}
+                setAccommodationFilter={setAccommodationFilter}
+                showFilters={showFilters}
+                setShowFilters={setShowFilters}
+                uniqueGrades={uniqueGrades}
+                setIsAddingStudent={setIsAddingStudent}
+              />
 
               {/* Modal Confirmación Borrado */}
               <AnimatePresence>
@@ -2421,57 +2048,18 @@ export default function App() {
                 )}
               </AnimatePresence>
 
-              <div className="glass-card overflow-hidden">
-                <div className="data-grid-header hidden lg:grid">
-                  <div className="col-span-3">Estudiante / Curso</div>
-                  <div className="col-span-2">Adecuación</div>
-                  <div className="col-span-2">Diagnóstico</div>
-                  <div className="col-span-4">Orientaciones Pedagógicas</div>
-                  <div className="col-span-1 text-right">Acciones</div>
-                </div>
-                
-                <div className="bg-white rounded-b-2xl overflow-hidden">
-                  {isDataLoading ? (
-                    <SkeletonLoader />
-                  ) : (
-                    <>
-                      {filteredStudents.map((student) => (
-                        <StudentListItem 
-                          key={student.id}
-                          student={student}
-                          isAdmin={isAdmin}
-                          privacyVisible={privacyVisible}
-                          onView={async (s) => {
-                            if (!s.photoUrl) {
-                              const fullStudent = await fetchFullStudent(s.id);
-                              if (fullStudent) {
-                                setViewingStudent(fullStudent);
-                                // Update local state so we don't fetch it again
-                                setStudents(prev => prev.map(curr => curr.id === s.id ? fullStudent : curr));
-                                return;
-                              }
-                            }
-                            setViewingStudent(s);
-                          }}
-                          onEdit={startEditing}
-                          onDelete={(s) => {
-                            setStudentToDelete(s);
-                            setIsConfirmingDelete(true);
-                          }}
-                        />
-                      ))}
-                      {filteredStudents.length === 0 && (
-                        <div className="p-20 text-center space-y-4">
-                          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-                            <Search className="w-8 h-8 text-slate-300" />
-                          </div>
-                          <p className="text-slate-400 font-medium">No se encontraron estudiantes con esos criterios.</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+              <StudentsPage
+                filteredStudents={filteredStudents}
+                isDataLoading={isDataLoading}
+                isAdmin={isAdmin}
+                privacyVisible={privacyVisible}
+                fetchFullStudent={fetchFullStudent}
+                startEditing={startEditing}
+                setStudentToDelete={setStudentToDelete}
+                setIsConfirmingDelete={setIsConfirmingDelete}
+                setViewingStudent={setViewingStudent}
+                setStudents={setStudents}
+              />
             </motion.div>
           )}
 
