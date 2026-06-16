@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import { seedStudents } from '../data/seedData';
+import type { Student } from '../types';
 
 const LOCAL_STORAGE_KEY = 'edugestion_local_students';
 
@@ -9,7 +10,7 @@ export interface StudentDTO {
   grade: string;
   diagnosis: string;
   resolution: string;
-  accommodationType: string;
+  accommodationType: 'Adecuación de Acceso' | 'Adecuación Curricular' | 'Sin adecuación';
   photoUrl?: string | null;
   createdAt: string;
 }

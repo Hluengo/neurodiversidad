@@ -15,7 +15,7 @@ interface Props {
   setStudentToDelete: (s: Student | null) => void;
   setIsConfirmingDelete: (v: boolean) => void;
   setViewingStudent: (s: Student | null) => void;
-  setStudents: (s: Student[]) => void;
+  setStudents: React.Dispatch<React.SetStateAction<Student[]>>;
 
   // Controls / filters
   searchTerm: string;

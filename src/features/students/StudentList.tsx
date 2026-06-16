@@ -1,7 +1,7 @@
 import React from 'react';
 import { Student } from '../../types';
 import StudentListItem from './StudentListItem';
-import { FixedSizeList as VirtualList } from 'react-window';
+import { FixedSizeList as VirtualList, type ListChildComponentProps } from 'react-window';
 import { SkeletonLoader } from '../../components/SkeletonLoaderPlaceholder';
 
 interface Props {
@@ -11,10 +11,10 @@ interface Props {
   privacyVisible: boolean;
   fetchFullStudent: (id: string) => Promise<Student | null>;
   startEditing: (s: Student) => void;
-  setStudentToDelete: (s: Student) => void;
+  setStudentToDelete: (s: Student | null) => void;
   setIsConfirmingDelete: (v: boolean) => void;
   setViewingStudent: (s: Student | null) => void;
-  setStudents: (s: Student[]) => void;
+  setStudents: React.Dispatch<React.SetStateAction<Student[]>>;
 }
 
 export const StudentList: React.FC<Props> = ({ filteredStudents, isDataLoading, isAdmin, privacyVisible, fetchFullStudent, startEditing, setStudentToDelete, setIsConfirmingDelete, setViewingStudent, setStudents }) => {
@@ -30,36 +30,38 @@ export const StudentList: React.FC<Props> = ({ filteredStudents, isDataLoading, 
     );
   }
 
+  const Row = ({ index, style }: ListChildComponentProps<unknown>) => {
+    const student = filteredStudents[index];
+    return (
+      <div style={style} key={student.id}>
+        <StudentListItem
+          student={student}
+          isAdmin={isAdmin}
+          privacyVisible={privacyVisible}
+          onView={async (s) => {
+            if (!s.photoUrl) {
+              const fullStudent = await fetchFullStudent(s.id);
+              if (fullStudent) {
+                setViewingStudent(fullStudent);
+                setStudents((prev: Student[]) => prev.map((curr: Student) => curr.id === s.id ? fullStudent : curr));
+                return;
+              }
+            }
+            setViewingStudent(s);
+          }}
+          onEdit={startEditing}
+          onDelete={(s) => {
+            setStudentToDelete(s);
+            setIsConfirmingDelete(true);
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <VirtualList height={600} itemCount={filteredStudents.length} itemSize={110} width={'100%'}>
-      {({ index, style }) => {
-        const student = filteredStudents[index];
-        return (
-          <div style={style} key={student.id}>
-            <StudentListItem
-              student={student}
-              isAdmin={isAdmin}
-              privacyVisible={privacyVisible}
-              onView={async (s) => {
-                if (!s.photoUrl) {
-                  const fullStudent = await fetchFullStudent(s.id);
-                  if (fullStudent) {
-                    setViewingStudent(fullStudent);
-                    setStudents(prev => prev.map(curr => curr.id === s.id ? fullStudent : curr));
-                    return;
-                  }
-                }
-                setViewingStudent(s);
-              }}
-              onEdit={startEditing}
-              onDelete={(s) => {
-                setStudentToDelete(s);
-                setIsConfirmingDelete(true);
-              }}
-            />
-          </div>
-        );
-      }}
+      {Row}
     </VirtualList>
   );
 };

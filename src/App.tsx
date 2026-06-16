@@ -316,7 +316,7 @@ export default function App() {
     }
   }, [isLocalFallback, studentsHook.students]);
 
-  const fetchFullStudent = async (studentId: string) => {
+  const fetchFullStudent = async (studentId: string): Promise<Student | null> => {
     if (isLocalFallback) {
       const local = studentsHook.students.find(s => s.id === studentId) || null;
       return local || null;
@@ -2048,18 +2048,6 @@ export default function App() {
                 )}
               </AnimatePresence>
 
-              <StudentsPage
-                filteredStudents={filteredStudents}
-                isDataLoading={isDataLoading}
-                isAdmin={isAdmin}
-                privacyVisible={privacyVisible}
-                fetchFullStudent={fetchFullStudent}
-                startEditing={startEditing}
-                setStudentToDelete={setStudentToDelete}
-                setIsConfirmingDelete={setIsConfirmingDelete}
-                setViewingStudent={setViewingStudent}
-                setStudents={setStudents}
-              />
             </motion.div>
           )}
 
