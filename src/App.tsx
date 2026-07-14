@@ -523,9 +523,9 @@ export default function App() {
       return;
     }
     
-    const studentData = { ...newStudent };
-    const isEditing = !!newStudent.id;
-    const studentId = newStudent.id;
+    const { id: _editId, ...studentData } = newStudent;
+    const isEditing = !!_editId;
+    const studentId = _editId;
 
     setIsAddingStudent(false);
     setNewStudent({ id: undefined, fullName: '', grade: '', diagnosis: '', resolution: '', accommodationType: 'Adecuación de Acceso', photoUrl: '' });
