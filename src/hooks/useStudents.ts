@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import studentsService, { StudentDTO } from '../services/studentsService';
+import studentsService from '../services/studentsService';
+import type { Student } from '../types';
 
 export function useStudents() {
-  const [students, setStudents] = useState<StudentDTO[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async () => {
@@ -19,14 +20,14 @@ export function useStudents() {
     load();
   }, [load]);
 
-  const create = useCallback(async (s: StudentDTO) => {
+  const create = useCallback(async (s: Student) => {
     await studentsService.createLocal(s);
     setStudents(prev => [s, ...prev]);
   }, []);
 
-  const update = useCallback(async (id: string, data: Partial<StudentDTO>) => {
+  const update = useCallback(async (id: string, data: Partial<Student>) => {
     await studentsService.updateLocal(id, data);
-    setStudents(prev => prev.map(p => p.id === id ? { ...p, ...data } as StudentDTO : p));
+    setStudents(prev => prev.map(p => p.id === id ? { ...p, ...data } as Student : p));
   }, []);
 
   const remove = useCallback(async (id: string) => {

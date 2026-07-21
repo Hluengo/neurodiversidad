@@ -4,34 +4,23 @@ import type { Student } from '../types';
 
 const LOCAL_STORAGE_KEY = 'edugestion_local_students';
 
-export interface StudentDTO {
-  id: string;
-  fullName: string;
-  grade: string;
-  diagnosis: string;
-  resolution: string;
-  accommodationType: 'Adecuación de Acceso' | 'Adecuación Curricular' | 'Sin adecuación';
-  photoUrl?: string | null;
-  createdAt: string;
-}
-
-function readLocal(): StudentDTO[] {
+function readLocal(): Student[] {
   const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (!raw) return [];
-  try { return JSON.parse(raw) as StudentDTO[]; } catch { return []; }
+  try { return JSON.parse(raw) as Student[]; } catch { return []; }
 }
 
-function writeLocal(list: StudentDTO[]) {
+function writeLocal(list: Student[]) {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
 }
 
 export const studentsService = {
-  async listLocal(): Promise<StudentDTO[]> {
+  async listLocal(): Promise<Student[]> {
     const existing = readLocal();
     if (existing && existing.length > 0) return existing;
 
     // Initialize defaults from seed data for first-time use
-    const defaults: StudentDTO[] = seedStudents.map((s, idx) => ({
+    const defaults: Student[] = seedStudents.map((s, idx) => ({
       id: `local-student-${idx}`,
       fullName: s.fullName,
       grade: s.grade,
@@ -45,16 +34,16 @@ export const studentsService = {
     return defaults;
   },
 
-  async getLocal(id: string): Promise<StudentDTO | undefined> {
+  async getLocal(id: string): Promise<Student | undefined> {
     return readLocal().find(s => s.id === id);
   },
 
-  async createLocal(student: StudentDTO): Promise<void> {
+  async createLocal(student: Student): Promise<void> {
     const list = readLocal();
     writeLocal([student, ...list]);
   },
 
-  async updateLocal(id: string, data: Partial<StudentDTO>): Promise<void> {
+  async updateLocal(id: string, data: Partial<Student>): Promise<void> {
     const list = readLocal().map(s => s.id === id ? { ...s, ...data } : s);
     writeLocal(list);
   },
