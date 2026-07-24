@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { CheckCircle2, ShieldAlert } from 'lucide-react';
 import cn from '../utils/classnames';
 import type { ToastState } from '../hooks/useToast';
@@ -12,7 +12,7 @@ export const Toast: React.FC<Props> = ({ toast }) => {
   return (
     <AnimatePresence>
       {toast && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 50, x: '-50%' }}
           animate={{ opacity: 1, y: 0, x: '-50%' }}
           exit={{ opacity: 0, y: 20, x: '-50%' }}
@@ -26,7 +26,7 @@ export const Toast: React.FC<Props> = ({ toast }) => {
           {toast.type === 'success' && <CheckCircle2 className="w-5 h-5" />}
           {toast.type === 'error' && <ShieldAlert className="w-5 h-5" />}
           <span>{toast.message}</span>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

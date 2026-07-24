@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { ShieldAlert, FileText } from 'lucide-react';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 
 export const Decreto83Guide: React.FC<Props> = ({ onBack }) => {
   return (
-    <motion.div 
+    <m.div
       key="guide"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -56,16 +56,17 @@ export const Decreto83Guide: React.FC<Props> = ({ onBack }) => {
           </div>
 
           <div className="flex justify-center pt-8">
-            <button 
+            <button
+              type="button"
               onClick={onBack}
-              className="px-10 py-4 bg-slate-800 text-white rounded-2xl font-black shadow-xl hover:bg-slate-900 transition-all active:scale-95"
+              className="px-10 py-4 bg-slate-800 text-white rounded-2xl font-black shadow-xl hover:bg-slate-900 transition-colors active:scale-95"
             >
               Volver al Panel
             </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

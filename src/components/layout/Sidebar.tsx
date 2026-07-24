@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -22,6 +22,7 @@ interface SidebarItemProps {
 
 const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, active, onClick }) => (
   <button
+    type="button"
     onClick={onClick}
     className={cn(
       "flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden",
@@ -30,7 +31,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, active, on
         : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
     )}
   >
-    {active && <motion.div layoutId="sidebar-active" className="absolute left-0 w-1 h-6 bg-brand-accent rounded-r-full" />}
+    {active && <m.div layoutId="sidebar-active" className="absolute left-0 w-1 h-6 bg-brand-accent rounded-r-full" />}
     <Icon className={cn("w-5 h-5 transition-colors", active ? "text-brand-accent" : "group-hover:text-brand-accent")} />
     <span className="text-sm">{label}</span>
   </button>
@@ -87,11 +88,14 @@ export const Sidebar: React.FC<Props> = ({
     <>
       <AnimatePresence>
         {isSidebarOpen && (
-          <motion.div 
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCloseSidebar}
+            onKeyDown={(e) => { if (e.key === 'Escape') onCloseSidebar(); }}
+            role="button"
+            tabIndex={0}
             className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden"
           />
         )}
@@ -124,7 +128,7 @@ export const Sidebar: React.FC<Props> = ({
               <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">NeuroDiversidad 2026</p>
             </div>
           </div>
-          <button onClick={onCloseSidebar} className="md:hidden p-2 text-slate-400">
+          <button type="button" onClick={onCloseSidebar} className="md:hidden p-2 text-slate-400" aria-label="Cerrar menú">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -194,7 +198,8 @@ export const Sidebar: React.FC<Props> = ({
             )}
           </div>
           {user ? (
-            <button 
+            <button
+              type="button"
               onClick={onLogout}
               className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium"
             >
@@ -204,7 +209,8 @@ export const Sidebar: React.FC<Props> = ({
           ) : (
             <div className="space-y-3">
               {!showLoginForm ? (
-                <button 
+                <button
+                  type="button"
                   onClick={onToggleLoginForm}
                   className="flex items-center gap-3 w-full px-4 py-3 text-brand-primary hover:bg-brand-accent/5 rounded-xl transition-colors font-medium"
                 >
@@ -225,26 +231,34 @@ export const Sidebar: React.FC<Props> = ({
                       <X className="w-4 h-4" />
                     </button>
                   </div>
-                  <input 
-                    type="email"
-                    placeholder="Correo"
-                    value={loginEmail}
-                    onChange={(e) => onSetLoginEmail(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all"
-                    required
-                  />
-                  <input 
-                    type="password"
-                    placeholder="Contraseña"
-                    value={loginPassword}
-                    onChange={(e) => onSetLoginPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all"
-                    required
-                  />
-                  <button 
+                  <div>
+                    <label htmlFor="login-email" className="sr-only">Correo</label>
+                    <input
+                      id="login-email"
+                      type="email"
+                      placeholder="Correo"
+                      value={loginEmail}
+                      onChange={(e) => onSetLoginEmail(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-colors"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="login-password" className="sr-only">Contraseña</label>
+                    <input
+                      id="login-password"
+                      type="password"
+                      placeholder="Contraseña"
+                      value={loginPassword}
+                      onChange={(e) => onSetLoginPassword(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-colors"
+                      required
+                    />
+                  </div>
+                  <button
                     type="submit"
                     disabled={isLoggingIn}
-                    className="w-full bg-brand-accent text-white py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all disabled:opacity-50"
+                    className="w-full bg-brand-accent text-white py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors disabled:opacity-50"
                   >
                     {isLoggingIn ? 'Procesando...' : (authMode === 'login' ? 'Entrar' : 'Crear Cuenta')}
                   </button>

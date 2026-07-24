@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { X, Camera, User as UserIcon, Info } from 'lucide-react';
 import { ALL_GRADES } from '../../constants/grades';
 
@@ -41,7 +41,7 @@ export const StudentFormModal: React.FC<Props> = ({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-6">
-          <motion.div 
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -51,9 +51,11 @@ export const StudentFormModal: React.FC<Props> = ({
               <h3 className="text-xl md:text-2xl font-black text-slate-800 font-display">
                 {student.id ? "Editar Registro" : "Nuevo Registro Estudiantil"}
               </h3>
-              <button 
-                onClick={handleClose} 
+              <button
+                type="button"
+                onClick={handleClose}
                 className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                aria-label="Cerrar formulario"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -62,7 +64,7 @@ export const StudentFormModal: React.FC<Props> = ({
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative group">
-                    <div className="w-48 h-48 rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden transition-all group-hover:border-brand-accent">
+                    <div className="w-48 h-48 rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden transition-colors group-hover:border-brand-accent">
                       {student.photoUrl ? (
                         <img 
                           key={student.photoUrl}
@@ -78,9 +80,9 @@ export const StudentFormModal: React.FC<Props> = ({
                         </div>
                       )}
                     </div>
-                    <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-3xl">
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-3xl" htmlFor="student-photo">
                       <Camera className="w-10 h-10 text-white" />
-                      <input type="file" accept="image/*" className="hidden" onChange={onPhotoUpload} />
+                      <input id="student-photo" type="file" accept="image/*" className="hidden" onChange={onPhotoUpload} />
                     </label>
                   </div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Foto</p>
@@ -88,19 +90,21 @@ export const StudentFormModal: React.FC<Props> = ({
 
                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre Completo</label>
-                    <input 
+                    <label htmlFor="student-fullName" className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre Completo</label>
+                    <input
+                      id="student-fullName"
                       required
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all"
+                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-colors"
                       value={student.fullName}
                       onChange={e => onSetStudent({...student, fullName: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Curso</label>
-                    <select 
+                    <label htmlFor="student-grade" className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Curso</label>
+                    <select
+                      id="student-grade"
                       required
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all appearance-none"
+                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-colors appearance-none"
                       value={student.grade}
                       onChange={e => onSetStudent({...student, grade: e.target.value})}
                     >
@@ -120,8 +124,8 @@ export const StudentFormModal: React.FC<Props> = ({
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipo de Adecuación</label>
-                  <button 
+                  <label htmlFor="student-accommodationType" className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipo de Adecuación</label>
+                  <button
                     type="button"
                     onClick={onViewGuide}
                     className="text-[10px] font-black text-brand-accent uppercase tracking-widest flex items-center gap-1 hover:underline"
@@ -130,8 +134,9 @@ export const StudentFormModal: React.FC<Props> = ({
                     Ver Guía
                   </button>
                 </div>
-                <select 
-                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all"
+                <select
+                  id="student-accommodationType"
+                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-colors"
                   value={student.accommodationType}
                   onChange={e => onSetStudent({...student, accommodationType: e.target.value as any})}
                 >
@@ -141,20 +146,22 @@ export const StudentFormModal: React.FC<Props> = ({
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnóstico Clínico</label>
-                <textarea 
+                <label htmlFor="student-diagnosis" className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnóstico Clínico</label>
+                <textarea
+                  id="student-diagnosis"
                   required
                   rows={3}
-                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-colors resize-none"
                   value={student.diagnosis}
                   onChange={e => onSetStudent({...student, diagnosis: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Orientaciones Pedagógicas</label>
-                <textarea 
+                <label htmlFor="student-resolution" className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Orientaciones Pedagógicas</label>
+                <textarea
+                  id="student-resolution"
                   rows={3}
-                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white transition-colors resize-none"
                   value={student.resolution}
                   onChange={e => onSetStudent({...student, resolution: e.target.value})}
                 />
@@ -169,13 +176,13 @@ export const StudentFormModal: React.FC<Props> = ({
                 </button>
                 <button 
                   type="submit"
-                  className="order-1 sm:order-2 flex-1 bg-brand-accent text-white py-4 rounded-2xl font-black shadow-lg shadow-brand-accent/20 hover:bg-emerald-600 transition-all active:scale-[0.98]"
+                  className="order-1 sm:order-2 flex-1 bg-brand-accent text-white py-4 rounded-2xl font-black shadow-lg shadow-brand-accent/20 hover:bg-emerald-600 transition-colors active:scale-[0.98]"
                 >
                   {student.id ? "Actualizar Registro" : "Guardar Registro"}
                 </button>
               </div>
             </form>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>

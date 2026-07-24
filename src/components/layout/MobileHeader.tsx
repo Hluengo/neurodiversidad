@@ -29,9 +29,11 @@ export const MobileHeader: React.FC<Props> = ({ isSidebarOpen, isLocalFallback, 
           )}
         </h2>
       </div>
-      <button 
+      <button
+        type="button"
         onClick={onToggleSidebar}
         className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+        aria-label={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
       >
         {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>

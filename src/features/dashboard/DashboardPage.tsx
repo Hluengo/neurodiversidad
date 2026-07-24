@@ -1,27 +1,18 @@
-import React, { useMemo } from 'react';
-import { motion } from 'motion/react';
-import { 
-  Users, 
+import React, { useMemo, lazy, Suspense } from 'react';
+import { m } from 'motion/react';
+import {
+  Users,
   Shield,
-  CheckCircle2, 
+  CheckCircle2,
   FileText,
   BookOpen,
   Eye
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
 import { StatCard } from './StatCard';
 import type { Student } from '../../types';
+
+const BarChartComponent = lazy(() => import('./charts/BarChartComponent'));
+const PieChartComponent = lazy(() => import('./charts/PieChartComponent'));
 
 interface Props {
   students: Student[];
@@ -95,7 +86,7 @@ export const DashboardPage: React.FC<Props> = ({ students, onNavigate }) => {
   }, [students]);
 
   return (
-    <motion.div 
+    <m.div
       key="dashboard"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -137,31 +128,11 @@ export const DashboardPage: React.FC<Props> = ({ students, onNavigate }) => {
         <div className="lg:col-span-2 space-y-8">
           <div className="glass-card p-8">
             <h3 className="text-lg font-black text-slate-800 mb-6 font-display">Distribución por Curso</h3>
-            <div className="h-[400px] min-h-0 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dashboardStats.chartData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#64748b', fontSize: 10 }}
-                    interval={0}
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    cursor={{ fill: '#f8fafc' }}
-                  />
-                  <Bar dataKey="value" fill="#10b981" radius={[6, 6, 0, 0]} barSize={30} onClick={(data) => {
-                    onNavigate('students', { grade: data.name || null });
-                  }} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <BarChartComponent
+              data={dashboardStats.chartData}
+              height={400}
+              onBarClick={(data) => onNavigate('students', { grade: data.name || null })}
+            />
           </div>
         </div>
 
@@ -179,9 +150,10 @@ export const DashboardPage: React.FC<Props> = ({ students, onNavigate }) => {
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
               ¿Conoces la diferencia entre Adecuación de Acceso y Adecuación Curricular? Consulta nuestra guía rápida basada en el Decreto 83.
             </p>
-            <button 
+            <button
+              type="button"
               onClick={() => onNavigate('guide')}
-              className="w-full py-3 bg-brand-accent text-white rounded-xl font-bold text-sm shadow-lg shadow-brand-accent/20 hover:bg-emerald-600 transition-all active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-brand-accent text-white rounded-xl font-bold text-sm shadow-lg shadow-brand-accent/20 hover:bg-emerald-600 transition-colors active:scale-95 flex items-center justify-center gap-2"
             >
               Ver Guía de Orientación
               <Eye className="w-4 h-4" />
@@ -193,51 +165,23 @@ export const DashboardPage: React.FC<Props> = ({ students, onNavigate }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="glass-card p-8">
           <h3 className="text-lg font-bold text-slate-800 mb-6">Tipos de Adecuación</h3>
-            <div className="h-[350px] min-h-0 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: 'Acceso', value: dashboardStats.accessCount },
-                      { name: 'Curricular', value: dashboardStats.curricularCount },
-                      { name: 'Sin Adecuación', value: dashboardStats.totalStudents - (dashboardStats.accessCount + dashboardStats.curricularCount) }
-                    ]}
-                  innerRadius={80}
-                  outerRadius={110}
-                  paddingAngle={5}
-                  dataKey="value"
-                  >
-                    <Cell fill="#10b981" />
-                    <Cell fill="#f59e0b" />
-                    <Cell fill="#e2e8f0" />
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          <PieChartComponent
+            data={[
+              { name: 'Acceso', value: dashboardStats.accessCount },
+              { name: 'Curricular', value: dashboardStats.curricularCount },
+              { name: 'Sin Adecuación', value: dashboardStats.totalStudents - (dashboardStats.accessCount + dashboardStats.curricularCount) }
+            ]}
+            colors={['#10b981', '#f59e0b', '#e2e8f0']}
+          />
         </div>
 
         <div className="glass-card p-8">
           <h3 className="text-lg font-bold text-slate-800 mb-6">Detalle de "Otros" Diagnósticos</h3>
-            <div className="h-[350px] min-h-0 relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={dashboardStats.othersChartData}
-                  innerRadius={80}
-                  outerRadius={110}
-                  paddingAngle={2}
-                  dataKey="value"
-                  label={({ name, percent }) => (percent ?? 0) > 0.05 ? `${name}` : ''}
-                  >
-                    {dashboardStats.othersChartData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e', '#84cc16'][index % 8]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          <PieChartComponent
+            data={dashboardStats.othersChartData}
+            paddingAngle={2}
+            label={({ name, percent }) => (percent ?? 0) > 0.05 ? `${name}` : ''}
+          />
         </div>
       </div>
 
@@ -245,20 +189,23 @@ export const DashboardPage: React.FC<Props> = ({ students, onNavigate }) => {
         <h3 className="text-lg font-bold text-slate-800 mb-6">Distribución por Diagnóstico</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {dashboardStats.diagnosisChartData.map((item) => (
-            <motion.div 
+            <m.div
               key={item.name}
               whileHover={{ y: -5 }}
               onClick={() => onNavigate('students', { diagnosis: item.name })}
-              className="glass-card p-6 text-center space-y-2 border-t-4 border-brand-accent cursor-pointer hover:shadow-xl transition-all"
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onNavigate('students', { diagnosis: item.name }); }}
+              role="button"
+              tabIndex={0}
+              className="glass-card p-6 text-center space-y-2 border-t-4 border-brand-accent cursor-pointer hover:shadow-xl transition-colors"
             >
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.name}</p>
               <h4 className="text-3xl font-black text-slate-800">{item.value}</h4>
               <p className="text-[10px] text-slate-500 font-medium">Estudiantes</p>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { Shield, ShieldAlert, FileText, CheckCircle2, Trash2, X, User as UserIcon } from 'lucide-react';
 import cn from '../../utils/classnames';
 import { PrivacyMask } from '../../components/PrivacyMask';
@@ -24,7 +24,7 @@ export const StudentDetailModal: React.FC<Props> = ({
     <AnimatePresence>
       {student && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-8">
-          <motion.div 
+          <m.div
             initial={{ opacity: 0, scale: 0.9, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 40 }}
@@ -44,17 +44,20 @@ export const StudentDetailModal: React.FC<Props> = ({
               </div>
               <div className="flex items-center gap-3">
                 {isAdmin && (
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => onDelete(student)}
-                    className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all active:scale-90"
+                    className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-colors active:scale-90"
                     title="Eliminar estudiante"
                   >
                     <Trash2 className="w-6 h-6" />
                   </button>
                 )}
-                <button 
-                  onClick={onClose} 
-                  className="p-3 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl transition-all active:scale-90"
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="p-3 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl transition-colors active:scale-90"
+                  aria-label="Cerrar ficha"
                 >
                   <X className="w-7 h-7" />
                 </button>
@@ -78,7 +81,7 @@ export const StudentDetailModal: React.FC<Props> = ({
                         <UserIcon className="w-24 h-24 text-slate-300" />
                       )}
                     </div>
-                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-2.5 rounded-full shadow-xl border-2 border-white whitespace-nowrap transition-all"
+                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-2.5 rounded-full shadow-xl border-2 border-white whitespace-nowrap transition-colors"
                       style={{ 
                         backgroundColor: student.accommodationType === 'Adecuación de Acceso' ? '#10b981' : 
                                         student.accommodationType === 'Adecuación Curricular' ? '#f59e0b' : '#64748b' 
@@ -97,22 +100,22 @@ export const StudentDetailModal: React.FC<Props> = ({
                 <div className="flex-1 space-y-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Nombre Completo</label>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Nombre Completo</span>
                       <p className="text-2xl font-black text-slate-800 leading-tight font-display">
                         <PrivacyMask text={student.fullName} visible={!privacyVisible} />
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Curso / Nivel</label>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Curso / Nivel</span>
                       <p className="text-2xl font-black text-slate-800 leading-tight font-display">{student.grade}</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
                       <ShieldAlert className="w-4 h-4 text-brand-accent" />
                       Diagnóstico Clínico
-                    </label>
+                    </span>
                     <div className="p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 shadow-inner relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-accent/20" />
                       <p className="text-slate-700 text-lg font-medium leading-relaxed whitespace-pre-line">
@@ -122,10 +125,10 @@ export const StudentDetailModal: React.FC<Props> = ({
                   </div>
 
                   <div className="space-y-4">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       Orientaciones y Estrategias Pedagógicas
-                    </label>
+                    </span>
                     <div className="p-8 bg-emerald-50/20 rounded-[2rem] border border-emerald-100 shadow-inner relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/20" />
                       <p className="text-slate-800 text-lg font-medium leading-relaxed whitespace-pre-line italic">
@@ -138,14 +141,15 @@ export const StudentDetailModal: React.FC<Props> = ({
             </div>
 
             <div className="p-8 md:p-10 border-t border-slate-100 bg-slate-50/50 flex justify-end shrink-0">
-              <button 
+              <button
+                type="button"
                 onClick={onClose}
-                className="px-10 py-4 bg-slate-800 text-white rounded-2xl font-black text-base shadow-xl shadow-slate-800/20 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 transition-all"
+                className="px-10 py-4 bg-slate-800 text-white rounded-2xl font-black text-base shadow-xl shadow-slate-800/20 hover:bg-slate-900 hover:-translate-y-1 active:translate-y-0 transition-colors"
               >
                 Cerrar Expediente
               </button>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>

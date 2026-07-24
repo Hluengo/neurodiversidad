@@ -18,7 +18,7 @@ import {
   Download,
   Menu
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { supabase } from './supabase';
 import { Student } from './types';
 import { Profiler } from 'react';
@@ -57,19 +57,25 @@ export default function App() {
 
   const photoCache = React.useRef<Record<string, string | null>>({});
 
+  const gradeSets = useMemo(() => ({
+    preschool: new Set(ALL_GRADES.preschool),
+    primary: new Set(ALL_GRADES.primary),
+    secondary: new Set(ALL_GRADES.secondary),
+  }), []);
+
   const uniqueGrades = useMemo(() => {
     if (!students || students.length === 0) return [];
     let filteredGrades = students.map(s => s.grade);
     if (levelFilter === 'preschool') {
-      filteredGrades = filteredGrades.filter(g => ALL_GRADES.preschool.includes(g));
+      filteredGrades = filteredGrades.filter(g => gradeSets.preschool.has(g));
     } else if (levelFilter === 'primary') {
-      filteredGrades = filteredGrades.filter(g => ALL_GRADES.primary.includes(g));
+      filteredGrades = filteredGrades.filter(g => gradeSets.primary.has(g));
     } else if (levelFilter === 'secondary') {
-      filteredGrades = filteredGrades.filter(g => ALL_GRADES.secondary.includes(g));
+      filteredGrades = filteredGrades.filter(g => gradeSets.secondary.has(g));
     }
     const grades = new Set(filteredGrades);
     return Array.from(grades).sort();
-  }, [students, levelFilter]);
+  }, [students, levelFilter, gradeSets]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebouncedValue(searchTerm, 300);
@@ -102,15 +108,15 @@ export default function App() {
       if (error) throw error;
       const sortedData = (data as Student[]).map(s => ({ ...s, photoUrl: undefined }));
       setStudents(sortedData);
-      if (!isBackground) setIsDataLoading(false);
       setGlobalError(null);
     } catch (err: any) {
       console.warn("Supabase fetch error, fallback to local storage:", err?.message);
       const local = studentsHook.students && studentsHook.students.length > 0 ? studentsHook.students : [];
       setStudents(local.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || '', 'es', { sensitivity: 'base' })));
       setIsLocalFallback(true);
-      if (!isBackground) setIsDataLoading(false);
       showToast("Funcionando en modo local. Los cambios se sincronizarán cuando haya conexión.", "info");
+    } finally {
+      if (!isBackground) setIsDataLoading(false);
     }
   }, [isLocalFallback, studentsHook.students, showToast]);
 
@@ -184,12 +190,19 @@ export default function App() {
     }
     try {
       const tables = ['students', 'cases'];
+      const results = await Promise.all(
+        tables.map(tableName =>
+          supabase.from(tableName).delete().neq('id', '00000000-0000-0000-0000-000000000000')
+        )
+      );
       let totalDeleted = 0;
-      for (const tableName of tables) {
-        const { error, count } = await supabase.from(tableName).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        if (error) { console.error(`Error al borrar tabla ${tableName}:`, error); continue; }
-        totalDeleted += count || 0;
-      }
+      results.forEach((result, i) => {
+        if (result.error) {
+          console.error(`Error al borrar tabla ${tables[i]}:`, result.error);
+        } else {
+          totalDeleted += result.count || 0;
+        }
+      });
       if (totalDeleted === 0) {
         showToast("No se encontraron registros para eliminar.", "info");
       } else {
@@ -336,14 +349,15 @@ export default function App() {
     const rows = students.map(s => [s.fullName, s.grade, s.diagnosis, s.accommodationType, s.resolution]);
     const csvContent = [headers.join(","), ...rows.map(row => row.map(cell => `"${cell?.replace(/"/g, '""') || ''}"`).join(","))].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `estudiantes_neetp_${new Date().toISOString().split('T')[0]}.csv`);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `estudiantes_neetp_${new Date().toISOString().split('T')[0]}.csv`;
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
     showToast("Listado descargado correctamente", "success");
   };
 
@@ -366,28 +380,35 @@ export default function App() {
       return;
     }
     let subscription: any = null;
+    let cancelled = false;
     const initAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
-        setLoading(false);
+        if (!cancelled) setUser(session?.user ?? null);
       } catch (err) {
         console.warn("Auth session fetch error, switching to mock:", err);
-        setUser({ id: 'local-admin-uid', email: 'hluengo.ro@gmail.com', user_metadata: { full_name: 'Gestor Escolar (Local)' } });
-        setIsLocalFallback(true);
-        setLoading(false);
-        return;
+        if (!cancelled) {
+          setUser({ id: 'local-admin-uid', email: 'hluengo.ro@gmail.com', user_metadata: { full_name: 'Gestor Escolar (Local)' } });
+          setIsLocalFallback(true);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
       try {
         const res = supabase.auth.onAuthStateChange((_event, session) => {
-          setUser(session?.user ?? null);
-          setLoading(false);
+          if (!cancelled) {
+            setUser(session?.user ?? null);
+            setLoading(false);
+          }
         });
         subscription = res.data?.subscription;
       } catch (err) { console.warn("Auth change subscription error:", err); }
     };
     initAuth();
-    return () => { if (subscription) { try { subscription.unsubscribe(); } catch (e) { console.warn("Unsubscribe failed:", e); } } };
+    return () => {
+      cancelled = true;
+      if (subscription) { try { subscription.unsubscribe(); } catch (e) { console.warn("Unsubscribe failed:", e); } }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLocalFallback]);
 
@@ -395,13 +416,17 @@ export default function App() {
     fetchStudents();
     if (isLocalFallback) return;
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
     const handleStudentChange = () => {
       if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => fetchStudents(true), 500);
+      debounceTimer = setTimeout(() => {
+        if (!cancelled) fetchStudents(true);
+      }, 500);
     };
     const channel = supabase.channel('students_changes');
     const subscription = channel.on('postgres_changes', { event: '*', schema: 'public', table: 'students' }, handleStudentChange).subscribe();
     return () => {
+      cancelled = true;
       if (debounceTimer) clearTimeout(debounceTimer);
       try { subscription.unsubscribe(); } catch (e) { console.warn("Channel cleanup failed:", e); }
     };
@@ -529,7 +554,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        <m.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
           className="w-12 h-12 border-4 border-brand-accent border-t-transparent rounded-full" />
       </div>
     );
@@ -538,16 +563,16 @@ export default function App() {
   if (globalError) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 text-center">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+        <m.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
           className="bg-white p-12 rounded-[3rem] shadow-2xl max-w-lg border border-red-100">
           <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8">
             <ShieldAlert className="w-12 h-12 text-red-600" />
           </div>
           <h2 className="text-3xl font-bold text-slate-800 mb-4">Error de Conexión</h2>
           <p className="text-slate-600 mb-8 leading-relaxed">{globalError}</p>
-          <button onClick={() => window.location.reload()}
-            className="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all">Reintentar</button>
-        </motion.div>
+          <button type="button" onClick={() => window.location.reload()}
+            className="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition-colors">Reintentar</button>
+        </m.div>
       </div>
     );
   }
@@ -555,7 +580,7 @@ export default function App() {
   if (isDataLoading && students.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        <m.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
           className="w-12 h-12 border-4 border-brand-accent border-t-transparent rounded-full" />
       </div>
     );
@@ -590,14 +615,14 @@ export default function App() {
                   </span>
                   <span><strong>Modo Local Autónomo Activo:</strong> El servidor de base de datos no está disponible. Las modificaciones se guardarán temporalmente en este navegador (localStorage).</span>
                 </div>
-                <button className="px-2 py-1 bg-amber-100 hover:bg-amber-200/80 text-amber-700 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
+                <button type="button" className="px-2 py-1 bg-amber-100 hover:bg-amber-200/80 text-amber-700 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
                   onClick={() => { setIsLocalFallback(false); fetchStudents(); }}>Reintentar Conexión</button>
               </div>
             )}
 
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
               <div className="flex items-center gap-4">
-                <button onClick={() => setIsSidebarOpen(true)}
+                <button type="button" onClick={() => setIsSidebarOpen(true)} aria-label="Abrir menú de navegación"
                   className="md:hidden p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50">
                   <Menu className="w-6 h-6" />
                 </button>
@@ -611,7 +636,7 @@ export default function App() {
                       levelFilter === 'secondary' ? "Registro Secundaria" : "Registro de Estudiantes"
                     )}
                     {isDataLoading && (
-                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      <m.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                         className="w-5 h-5 border-2 border-brand-accent border-t-transparent rounded-full shrink-0" />
                     )}
                   </h1>
@@ -628,13 +653,13 @@ export default function App() {
                 </div>
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button onClick={() => setPrivacyVisible(!privacyVisible)}
-                  className={cn("flex-1 sm:flex-none p-3 rounded-xl border transition-all flex items-center justify-center gap-2 font-medium text-sm",
+                <button type="button" onClick={() => setPrivacyVisible(!privacyVisible)} aria-label={privacyVisible ? "Mostrar datos sensibles" : "Ocultar datos sensibles"}
+                  className={cn("flex-1 sm:flex-none p-3 rounded-xl border transition-colors flex items-center justify-center gap-2 font-medium text-sm",
                     privacyVisible ? "bg-white border-slate-200 text-slate-600" : "bg-brand-primary text-white border-brand-primary")}>
                   {privacyVisible ? <EyeOff className="w-4 h-4 md:w-5 md:h-5" /> : <Eye className="w-4 h-4 md:w-5 md:h-5" />}
                   <span className="hidden xs:inline">{privacyVisible ? "Ocultar" : "Privacidad"}</span>
                 </button>
-                <button onClick={downloadCSV} className="bg-white border border-slate-200 p-3 rounded-xl text-slate-600 hover:bg-slate-50 transition-all active:scale-95" title="Descargar listado CSV">
+                <button type="button" onClick={downloadCSV} className="bg-white border border-slate-200 p-3 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors active:scale-95" title="Descargar listado CSV" aria-label="Descargar listado CSV">
                   <Download className="w-5 h-5" />
                 </button>
               </div>
@@ -652,7 +677,7 @@ export default function App() {
               )}
               {view === 'guide' && <Decreto83Guide onBack={() => setView('dashboard')} />}
               {view === 'students' && (
-                <motion.div key="students" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                <m.div key="students" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }} className="space-y-6">
                   <StudentsPage filteredStudents={filteredStudents} isDataLoading={isDataLoading} isAdmin={isAdmin}
                     privacyVisible={privacyVisible} fetchFullStudent={fetchFullStudent} startEditing={startEditing}
@@ -670,7 +695,7 @@ export default function App() {
 
                   <ConfirmDeleteModal open={isConfirmingDelete && !!studentToDelete}
                     title="¿Eliminar estudiante?"
-                    message={`¿Estás seguro de que deseas eliminar a <strong>${studentToDelete?.fullName}</strong>? Esta acción no se puede deshacer.`}
+                    message={<><strong>{studentToDelete?.fullName}</strong> — Esta acción no se puede deshacer.</>}
                     onConfirm={handleDeleteStudent}
                     onCancel={() => { setIsConfirmingDelete(false); setStudentToDelete(null); }} />
 
@@ -681,7 +706,7 @@ export default function App() {
                   <StudentFormModal isOpen={isAddingStudent} student={newStudent} onSetStudent={setNewStudent}
                     onSubmit={handleAddStudent} onClose={() => setIsAddingStudent(false)}
                     onPhotoUpload={handlePhotoUpload} onViewGuide={() => setView('guide')} />
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </main>

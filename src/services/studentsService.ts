@@ -2,7 +2,7 @@ import { supabase } from '../supabase';
 import { seedStudents } from '../data/seedData';
 import type { Student } from '../types';
 
-const LOCAL_STORAGE_KEY = 'edugestion_local_students';
+const LOCAL_STORAGE_KEY = 'edugestion_local_students:v1';
 
 function readLocal(): Student[] {
   const raw = localStorage.getItem(LOCAL_STORAGE_KEY);

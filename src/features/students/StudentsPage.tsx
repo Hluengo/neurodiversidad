@@ -37,18 +37,22 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
     <div>
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <div className="relative flex-1">
+          <label htmlFor="student-search" className="sr-only">Buscar estudiantes</label>
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
+            id="student-search"
             type="text"
             placeholder="Buscar..."
-            className="w-full pl-12 pr-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm md:text-base"
+            className="w-full pl-12 pr-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-colors text-sm md:text-base"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="relative">
+          <label htmlFor="grade-filter" className="sr-only">Filtrar por curso</label>
           <select
-            className="w-full sm:w-48 px-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm md:text-base appearance-none cursor-pointer"
+            id="grade-filter"
+            className="w-full sm:w-48 px-4 py-3 md:py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-colors text-sm md:text-base appearance-none cursor-pointer"
             value={gradeFilter || ''}
             onChange={(e) => setGradeFilter(e.target.value || null)}
           >
@@ -65,8 +69,10 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
           <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
             <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Filtro: {diagnosisFilter}</span>
             <button
+              type="button"
               onClick={() => setDiagnosisFilter(null)}
               className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
+              aria-label="Limpiar filtro de diagnóstico"
             >
               <X className="w-4 h-4 text-brand-accent" />
             </button>
@@ -76,8 +82,10 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
           <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
             <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Filtro: {accommodationFilter}</span>
             <button
+              type="button"
               onClick={() => setAccommodationFilter(null)}
               className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
+              aria-label="Limpiar filtro de adecuación"
             >
               <X className="w-4 h-4 text-brand-accent" />
             </button>
@@ -87,8 +95,10 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
           <div className="flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-4 py-2 rounded-2xl">
             <span className="text-xs font-bold text-brand-accent uppercase tracking-wider">Curso: {gradeFilter}</span>
             <button
+              type="button"
               onClick={() => setGradeFilter(null)}
               className="p-1 hover:bg-brand-accent/20 rounded-full transition-colors"
+              aria-label="Limpiar filtro de curso"
             >
               <X className="w-4 h-4 text-brand-accent" />
             </button>
@@ -96,9 +106,10 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
         )}
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
-              "flex-1 sm:flex-none px-4 md:px-6 py-3 md:py-4 rounded-2xl font-medium flex items-center justify-center gap-2 transition-all text-sm",
+              "flex-1 sm:flex-none px-4 md:px-6 py-3 md:py-4 rounded-2xl font-medium flex items-center justify-center gap-2 transition-colors text-sm",
               showFilters ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/20" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
             )}
           >
@@ -107,8 +118,9 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
           </button>
           {isAdmin && (
             <button
+              type="button"
               onClick={() => setIsAddingStudent(true)}
-              className="flex-1 sm:flex-none bg-brand-accent text-white px-4 md:px-8 py-3 md:py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-brand-accent/20 text-sm"
+              className="flex-1 sm:flex-none bg-brand-accent text-white px-4 md:px-8 py-3 md:py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors shadow-lg shadow-brand-accent/20 text-sm"
             >
               <Plus className="w-4 h-4 md:w-5 md:h-5" />
               Nuevo
@@ -120,14 +132,15 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
       {showFilters && (
         <div className="glass-card p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-brand-accent/20">
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Diagnóstico</label>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Diagnóstico</span>
             <div className="flex flex-wrap gap-2">
               {['TEA', 'TDAH', 'TDA', 'Salud Mental', 'Otros'].map(cat => (
                 <button
+                  type="button"
                   key={cat}
                   onClick={() => setDiagnosisFilter(diagnosisFilter === cat ? null : cat)}
                   className={cn(
-                    "px-3 py-1.5 rounded-xl text-xs font-bold transition-all border",
+                    "px-3 py-1.5 rounded-xl text-xs font-bold transition-colors border",
                     diagnosisFilter === cat
                       ? "bg-brand-accent text-white border-brand-accent shadow-md"
                       : "bg-white text-slate-500 border-slate-200 hover:border-brand-accent hover:text-brand-accent"
@@ -139,14 +152,15 @@ export const StudentsPage: React.FC<Props> = ({ filteredStudents, isDataLoading,
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Adecuación</label>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Filtrar por Adecuación</span>
             <div className="flex flex-wrap gap-2">
               {['Adecuación de Acceso', 'Adecuación Curricular', 'Sin adecuación'].map(type => (
                 <button
+                  type="button"
                   key={type}
                   onClick={() => setAccommodationFilter(accommodationFilter === type ? null : type)}
                   className={cn(
-                    "px-3 py-1.5 rounded-xl text-xs font-bold transition-all border",
+                    "px-3 py-1.5 rounded-xl text-xs font-bold transition-colors border",
                     accommodationFilter === type
                       ? "bg-brand-accent text-white border-brand-accent shadow-md"
                       : "bg-white text-slate-500 border-slate-200 hover:border-brand-accent hover:text-brand-accent"

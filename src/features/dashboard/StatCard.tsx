@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import cn from '../../utils/classnames';
 
 interface Props {
@@ -11,10 +11,13 @@ interface Props {
 }
 
 export const StatCard: React.FC<Props> = React.memo(({ title, value, icon: Icon, color, onClick }) => (
-  <motion.div 
+  <m.div
     whileHover={{ y: -4 }}
     whileTap={{ scale: 0.98 }}
     onClick={onClick}
+    onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && onClick) onClick(); }}
+    role={onClick ? "button" : undefined}
+    tabIndex={onClick ? 0 : undefined}
     className={cn(
       "glass-card p-6 flex items-center gap-5 transition-all",
       onClick && "cursor-pointer hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
@@ -27,7 +30,7 @@ export const StatCard: React.FC<Props> = React.memo(({ title, value, icon: Icon,
       <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mb-1">{title}</p>
       <h3 className="text-3xl font-bold text-slate-800 tabular-nums">{value}</h3>
     </div>
-  </motion.div>
+  </m.div>
 ));
 
 StatCard.displayName = 'StatCard';
