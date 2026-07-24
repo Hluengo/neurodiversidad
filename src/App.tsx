@@ -533,7 +533,7 @@ export default function App() {
 
   useEffect(() => {
     if (isLocalFallback || filteredStudents.length === 0 || isDataLoading) return;
-    const studentsToFetch = filteredStudents.filter(s => s.photoUrl === undefined).slice(0, 50);
+    const studentsToFetch = filteredStudents.filter(s => s.photoUrl === undefined).slice(0, 20);
     if (studentsToFetch.length === 0) return;
     const fetchPhotosBatch = async () => {
       const ids = studentsToFetch.map(s => s.id);
@@ -546,7 +546,7 @@ export default function App() {
             return photoMatch ? { ...s, photoUrl: photoMatch.photoUrl } : s;
           }));
         }
-      } catch (err) { console.error("Error fetching photo batch:", err); }
+      } catch (err) { console.warn("Error fetching photo batch:", err); }
     };
     const timer = setTimeout(fetchPhotosBatch, 100);
     return () => clearTimeout(timer);
