@@ -11,12 +11,13 @@ import { StudentDetailModal } from './features/students/StudentDetailModal';
 import { StudentFormModal } from './features/students/StudentFormModal';
 import { ConfirmDeleteModal } from './features/students/ConfirmDeleteModal';
 import StudentsPage from './features/students/StudentsPage';
-import { 
+import {
   ShieldAlert,
-  Eye, 
-  EyeOff, 
+  Eye,
+  EyeOff,
   Download,
-  Menu
+  Menu,
+  Plus
 } from 'lucide-react';
 import { m, AnimatePresence } from 'motion/react';
 import { supabase } from './supabase';
@@ -709,6 +710,17 @@ export default function App() {
                 </m.div>
               )}
             </AnimatePresence>
+
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => setIsAddingStudent(true)}
+                className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-40 w-14 h-14 bg-brand-accent text-white rounded-full shadow-lg shadow-brand-accent/30 flex items-center justify-center hover:bg-emerald-600 hover:scale-110 transition-all active:scale-95"
+                aria-label="Agregar nuevo estudiante"
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            )}
           </main>
         </div>
       </div>
