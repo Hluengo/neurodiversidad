@@ -11,16 +11,17 @@ export const MobileHeader: React.FC<Props> = ({ isSidebarOpen, isLocalFallback, 
   return (
     <div className="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-40">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+        <div className="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center shadow-md overflow-hidden">
           <img
             src="/logo.svg"
-            alt="Logo"
-            className="w-full h-full object-contain p-1 bg-white"
+            alt="Logo EduGestion"
+            className="w-7 h-7 object-contain"
+            style={{ filter: 'brightness(0) invert(1)' }}
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
           />
-          <Shield className="w-5 h-5" />
+          <Shield className="w-5 h-5 text-white" />
         </div>
         <h2 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
           EduGestion - NeuroDiversidad 2026
