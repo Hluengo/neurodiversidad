@@ -1,10 +1,9 @@
 import React from 'react';
 import { m, AnimatePresence } from 'motion/react';
-import { 
-  LayoutDashboard, 
-  Users, 
+import {
+  LayoutDashboard,
+  Users,
   BookOpen,
-  Shield,
   LogOut,
   LogIn,
   X,
@@ -117,7 +116,6 @@ export const Sidebar: React.FC<Props> = ({
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface Props {
   isSidebarOpen: boolean;
@@ -21,7 +21,6 @@ export const MobileHeader: React.FC<Props> = ({ isSidebarOpen, isLocalFallback, 
               e.currentTarget.style.display = 'none';
             }}
           />
-          <Shield className="w-5 h-5 text-white" />
         </div>
         <h2 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
           EduGestion - NeuroDiversidad 2026
