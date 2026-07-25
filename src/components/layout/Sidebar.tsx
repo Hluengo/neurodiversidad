@@ -106,11 +106,11 @@ export const Sidebar: React.FC<Props> = ({
       )}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-11 h-11 flex items-center justify-center">
+            <div className="flex items-center justify-center">
               <img
                 src="/logo.svg"
                 alt="Logo EduGestion"
-                className="w-10 h-10 object-contain"
+                className="w-14 h-14 object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
