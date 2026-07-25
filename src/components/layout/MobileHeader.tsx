@@ -11,12 +11,11 @@ export const MobileHeader: React.FC<Props> = ({ isSidebarOpen, isLocalFallback, 
   return (
     <div className="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-40">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg flex items-center justify-center shadow-md overflow-hidden">
+        <div className="w-9 h-9 flex items-center justify-center">
           <img
             src="/logo.svg"
             alt="Logo EduGestion"
-            className="w-7 h-7 object-contain"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            className="w-8 h-8 object-contain"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
