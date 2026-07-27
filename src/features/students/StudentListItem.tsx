@@ -21,11 +21,7 @@ export const StudentListItem: React.FC<Props> = React.memo(({ student, isAdmin, 
         <div className="flex items-center gap-4">
           <div className="relative group/photo">
             <div className="w-20 h-20 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0 shadow-sm transition-transform duration-300 hover:scale-[3] hover:z-50 hover:shadow-2xl cursor-zoom-in">
-              {student.photoUrl === undefined ? (
-                <div className="w-full h-full bg-slate-200 animate-pulse flex items-center justify-center">
-                  <UserIcon className="w-10 h-10 text-slate-300" />
-                </div>
-              ) : student.photoUrl ? (
+              {student.photoUrl ? (
                 <img src={student.photoUrl} alt="" className="w-full h-full object-cover img-fade-in" loading="lazy" />
               ) : (
                 <UserIcon className="w-10 h-10 text-slate-300" />
@@ -94,11 +90,7 @@ export const StudentListItem: React.FC<Props> = React.memo(({ student, isAdmin, 
     <div className="hidden lg:flex lg:col-span-3 items-center gap-5 font-bold text-slate-800">
       <div className="relative group/photo">
         <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-md transition-transform duration-300 hover:scale-[3] hover:z-50 hover:shadow-2xl cursor-zoom-in origin-left">
-          {student.photoUrl === undefined ? (
-            <div className="w-full h-full bg-slate-200 animate-pulse flex items-center justify-center">
-              <UserIcon className="w-7 h-7 text-slate-300" />
-            </div>
-          ) : student.photoUrl ? (
+          {student.photoUrl ? (
             <img src={student.photoUrl} alt="" className="w-full h-full object-cover img-fade-in" loading="lazy" />
           ) : (
             <UserIcon className="w-7 h-7 text-slate-300" />

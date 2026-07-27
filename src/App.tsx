@@ -56,7 +56,6 @@ export default function App() {
     }
   }, [studentsHook.students]);
 
-  const photoCache = React.useRef<Record<string, string | null>>({});
 
   const gradeSets = useMemo(() => ({
     preschool: new Set(ALL_GRADES.preschool),
@@ -127,7 +126,7 @@ export default function App() {
       return local || null;
     }
     try {
-      const { data, error } = await supabase.from('students').select('*').eq('id', studentId).single();
+      const { data, error } = await supabase.from('students').select('id,fullName,grade,diagnosis,resolution,accommodationType,photoUrl,createdAt').eq('id', studentId).single();
       if (error) throw error;
       return data as Student;
     } catch (err) {
@@ -531,26 +530,8 @@ export default function App() {
     });
   }, [students, debouncedSearch, diagnosisFilter, accommodationFilter, gradeFilter, levelFilter]);
 
-  useEffect(() => {
-    if (isLocalFallback || filteredStudents.length === 0 || isDataLoading) return;
-    const studentsToFetch = filteredStudents.filter(s => s.photoUrl === undefined).slice(0, 20);
-    if (studentsToFetch.length === 0) return;
-    const fetchPhotosBatch = async () => {
-      const ids = studentsToFetch.map(s => s.id);
-      try {
-        const { data, error } = await supabase.from('students').select('id, photoUrl').in('id', ids);
-        if (!error && data) {
-          data.forEach(p => { photoCache.current[p.id] = p.photoUrl; });
-          setStudents(prev => prev.map(s => {
-            const photoMatch = data.find(p => p.id === s.id);
-            return photoMatch ? { ...s, photoUrl: photoMatch.photoUrl } : s;
-          }));
-        }
-      } catch (err) { console.warn("Error fetching photo batch:", err); }
-    };
-    const timer = setTimeout(fetchPhotosBatch, 100);
-    return () => clearTimeout(timer);
-  }, [filteredStudents, isDataLoading, isLocalFallback]);
+  // Las fotografías se cargan solo al abrir la ficha del estudiante.
+  // Evita descargar en segundo plano todas las imágenes Base64 en cada visita.
 
   if (loading) {
     return (
