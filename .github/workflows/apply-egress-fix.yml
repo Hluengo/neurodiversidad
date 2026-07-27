@@ -1,0 +1,86 @@
+name: Apply Supabase egress fix
+
+on:
+  push:
+    branches:
+      - fix/supabase-egress-photos
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Patch photo loading
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          app_path = Path('src/App.tsx')
+          app = app_path.read_text(encoding='utf-8')
+
+          app = app.replace("\n  const photoCache = React.useRef<Record<string, string | null>>({});\n", "\n")
+
+          pattern = re.compile(
+              r"\n  useEffect\(\(\) => \{\n"
+              r"    if \(isLocalFallback \|\| filteredStudents\.length === 0 \|\| isDataLoading\) return;\n"
+              r"    const studentsToFetch = filteredStudents\.filter\(s => s\.photoUrl === undefined\)\.slice\(0, 20\);\n"
+              r"    if \(studentsToFetch\.length === 0\) return;\n"
+              r"    const fetchPhotosBatch = async \(\) => \{.*?"
+              r"\n  \}, \[filteredStudents, isDataLoading, isLocalFallback\]\);\n",
+              re.S,
+          )
+          app, count = pattern.subn(
+              "\n  // Las fotografías se cargan solo al abrir la ficha del estudiante.\n"
+              "  // Evita descargar en segundo plano todas las imágenes Base64 en cada visita.\n",
+              app,
+          )
+          if count != 1:
+              raise SystemExit(f'No se encontró exactamente un bloque de carga masiva de fotos: {count}')
+
+          app = app.replace(
+              ".select('*').eq('id', studentId).single();",
+              ".select('id,fullName,grade,diagnosis,resolution,accommodationType,photoUrl,createdAt').eq('id', studentId).single();",
+          )
+          app_path.write_text(app, encoding='utf-8')
+
+          item_path = Path('src/features/students/StudentListItem.tsx')
+          item = item_path.read_text(encoding='utf-8')
+          item = re.sub(
+              r"\{student\.photoUrl === undefined \? \(\s*<div className=\"w-full h-full bg-slate-200 animate-pulse flex items-center justify-center\">\s*<UserIcon className=\"w-10 h-10 text-slate-300\" />\s*</div>\s*\) : student\.photoUrl \? \(",
+              "{student.photoUrl ? (",
+              item,
+              count=1,
+          )
+          item = re.sub(
+              r"\{student\.photoUrl === undefined \? \(\s*<div className=\"w-full h-full bg-slate-200 animate-pulse flex items-center justify-center\">\s*<UserIcon className=\"w-7 h-7 text-slate-300\" />\s*</div>\s*\) : student\.photoUrl \? \(",
+              "{student.photoUrl ? (",
+              item,
+              count=1,
+          )
+          item_path.write_text(item, encoding='utf-8')
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.tsx src/features/students/StudentListItem.tsx
+          git commit -m "fix: stop automatic download of all student photos [skip ci]"
+          git push
